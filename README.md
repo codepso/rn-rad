@@ -2,8 +2,8 @@
   <img src="https://s3.us-east-2.amazonaws.com/codepso-comunity/react-init/react-init.png" alt="Codepso" width="645">
 </h1>
 
-# react-init
-CLI for react and react-native projects.
+# rn-rad
+CLI for Rapid Application Development using React Native.
 ## Table of content
 - [Requirements](#requirements)
 - [Installation](#installation)
