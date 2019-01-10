@@ -1,0 +1,29 @@
+<h1 align="center">
+  <img src="https://s3.us-east-2.amazonaws.com/codepso-comunity/react-init/react-init.png" alt="Codepso" width="645">
+</h1>
+
+# react-init
+CLI for react and react-native projects.
+## Table of content
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [License](#license)
+- [Links](#links)
+## Requirements
+React Init Helper has the following requirements:
+ - Node 8
+ - NPM
+## Installation
+```bash
+npm install -g react-init
+```
+## License
+The React Init is licensed under the terms of the GPL Open Source license and is available for free.
+
+## Links
+- http://www.codepso.com
+- https://github.com/timmydoza/directory-exists
+- https://github.com/sindresorhus/make-dir
+- https://github.com/patorjk/figlet.js
+- https://github.com/chalk/chalk
+- https://github.com/nodeca/js-yaml
