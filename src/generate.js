@@ -70,7 +70,7 @@ const structure = async () => {
 
   // Added .gitkeep
   for (let path of paths) {
-    fs.copyFileSync('assets/files/.gitkeep', path + '/.gitkeep');
+    fs.copyFileSync('assets/files/gitkeep', path + '/.gitkeep');
   }
 
   // Added environment
