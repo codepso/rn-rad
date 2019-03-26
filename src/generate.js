@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const inquirer = require('inquirer');
 const makeDir = require('make-dir');
 const help = require('./help');
+const fs = require('fs');
 
 const log = console.log;
 let env = 'prod';
@@ -44,44 +45,56 @@ const init = (option) => {
   }
 };
 
-const structure = () => {
+const structure = async () => {
 
   const base = (env === 'prod') ? 'src/' : 'test/src/';
+
+  const paths = await Promise.all([
+    makeDir(base + 'services'),
+    makeDir(base + 'forms'),
+    makeDir(base + 'environments'),
+    makeDir(base + 'components'),
+    makeDir(base + 'screens'),
+    makeDir(base + 'redux'),
+    makeDir(base + 'redux/reducers'),
+    makeDir(base + 'redux/actions'),
+    makeDir(base + 'redux/types'),
+    makeDir(base + 'navigation'),
+    makeDir(base + 'helpers'),
+    makeDir(base + 'theme'),
+    makeDir(base + 'assets/styles'),
+    makeDir(base + 'assets/html'),
+    makeDir(base + 'assets/images'),
+    makeDir(base + 'assets/sounds'),
+  ]);
+
+  // Added .gitkeep
+  for (let path of paths) {
+    fs.copyFileSync('assets/files/.gitkeep', path + '/.gitkeep');
+  }
+
+  // Added environment
+  fs.copyFileSync('assets/files/environments/environment.ts', base + 'environments/environment.ts');
+  fs.copyFileSync('assets/files/environments/index.js', base + 'environments/index.js');
+
+  // log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
+
   const questions = [
     {
       type : 'confirm',
-      name : 'isReactNavigation',
-      message : 'Do you want use React Navigation? '
+      name : 'isRedux',
+      message : 'Do you want to add redux?'
     }
   ];
-  inquirer
+
+  /*inquirer
     .prompt(questions)
     .then(answers => {
-      Promise.all([
-        makeDir(base + 'config/env'),
-        makeDir(base + 'config/locale'),
-        makeDir(base + 'components'),
-        makeDir(base + 'screens'),
-        makeDir(base + 'redux'),
-        makeDir(base + 'redux/reducers'),
-        makeDir(base + 'redux/actions'),
-        makeDir(base + 'redux/types'),
-        makeDir(base + 'navigation'),
-        makeDir(base + 'forms'),
-        makeDir(base + 'helpers'),
-        makeDir(base + 'theme'),
-        makeDir(base + 'assets/styles'),
-        makeDir(base + 'assets/html'),
-        makeDir(base + 'assets/images'),
-        makeDir(base + 'assets/sounds'),
-      ]).then(paths => {
-
-        log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
-        if (answers.isReactNavigation) {
-          // log(chalk.white('Installing ') + chalk.white('react-navigation...'));
-        }
-      });
-    });
+      if (answers.isRedux) {
+        console.log('Enter');
+        // log(chalk.white('Installing ') + chalk.white('react-navigation...'));
+      }
+    });*/
 };
 
 module.exports = {
