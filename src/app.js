@@ -20,6 +20,7 @@ const printWelcome = () => {
   log(chalk.yellow('- generate (g)') +  chalk.white(' Generates and/or modifies files based on a schematic.'));
   log(chalk.yellow('- help (h)') +  chalk.white(' Lists available commands and their short descriptions.'));
   log(chalk.yellow('- Who (w)') +  chalk.white(' Lists authors'));
+  log(chalk.yellow('- version (v)') +  chalk.white(' Lists authors'));
 };
 
 const init = (env) => {
@@ -46,6 +47,10 @@ const init = (env) => {
     case 'w':
       help.printLogo();
       printAuthors();
+      break;
+    case 'version':
+    case 'v':
+      help.printVersion();
       break;
     default:
       help.printDefault();

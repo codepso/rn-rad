@@ -9,6 +9,11 @@ const printLogo = () => {
   log('');
 };
 
+const printVersion = () => {
+  log(chalk.white('Version ') + chalk.yellow('1.0.1'));
+  log('');
+};
+
 const printDefault = () => {
   // printLogo();
   log('');
@@ -19,5 +24,6 @@ const printDefault = () => {
 
 module.exports = {
   printLogo,
-  printDefault
+  printDefault,
+  printVersion
 };
