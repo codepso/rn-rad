@@ -90,7 +90,7 @@ const structure = async () => {
   // Added environment
   fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
   fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-  log(chalk.white('The directory structure is ready ')
+  log(chalk.white('The directory structure is ready '))
 
   // log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
 
