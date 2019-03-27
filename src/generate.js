@@ -45,7 +45,21 @@ const init = (option) => {
   }
 };
 
+const getAssetsPath = async () => {
+
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
+
+  // Get npm global path
+  const { stdout, stderr } = await exec('npm root -g');
+  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/'
+
+  return (env === 'prod') ? globalPath : 'assets/';
+}
+
 const structure = async () => {
+
+  const assetsPath = await getAssetsPath()
 
   const base = (env === 'prod') ? 'src/' : 'test/src/';
 
@@ -74,8 +88,9 @@ const structure = async () => {
   }
 
   // Added environment
-  fs.copyFileSync('assets/files/environments/environment.ts', base + 'environments/environment.ts');
-  fs.copyFileSync('assets/files/environments/index.js', base + 'environments/index.js');
+  fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
+  fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
+  log(chalk.white('The directory structure is ready ')
 
   // log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
 
