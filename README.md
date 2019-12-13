@@ -7,15 +7,23 @@ CLI for Rapid Application Development using React Native.
 ## Table of content
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Commands](#commands)
 - [License](#license)
 - [Links](#links)
 ## Requirements
 React Init Helper has the following requirements:
- - Node 8
+ - Node 8+
  - NPM
 ## Installation
 ```bash
-npm install -g react-init
+npm update -g @codepso/rn-rad
+```
+## Commands
+```bash
+rn-rad generate structure
+rn-rad generate component
+rn-rad help
+rn-rad version
 ```
 ## License
 The React Init is licensed under the terms of the GPL Open Source license and is available for free.
