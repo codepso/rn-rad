@@ -10,7 +10,7 @@ const printLogo = () => {
 };
 
 const printVersion = () => {
-  log(chalk.white('Version ') + chalk.yellow('1.0.1'));
+  log(chalk.white('Version ') + chalk.yellow('1.0.7'));
   log('');
 };
 
