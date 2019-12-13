@@ -16,6 +16,7 @@ React Init Helper has the following requirements:
  - NPM
 ## Installation
 ```bash
+npm install -g @codepso/rn-rad
 npm update -g @codepso/rn-rad
 ```
 ## Commands
