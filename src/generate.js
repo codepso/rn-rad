@@ -5,8 +5,8 @@ const inquirer = require('inquirer');
 const makeDir = require('make-dir');
 const help = require('./help');
 const fs = require('fs');
-const readJson = require('read-package-json');
 const _ = require('lodash');
+const readPackageJson = require('@pnpm/read-package-json');
 
 const log = console.log;
 let env = 'prod';
@@ -19,20 +19,27 @@ const test = () => {
   console.log(env);
 };
 
-const checkIfReactNativeProject = () => {
-  readJson('package.json', false, false, function (er, data) {
-    if (er) {
-      console.error('There was an error reading the package.json');
-      return
+const checkIfReactNativeProject = async () => {
+  try {
+    const pkgJson = await readPackageJson.default('package.json');
+    if (!_.has(pkgJson['dependencies'], 'react') || !_.has(pkgJson['dependencies'], 'react-native')) {
+      throw {code: 'REACT_NATIVE'};
+    }
+  } catch (error) {
+    let message = 'There was an unknown error';
+    if (_.has(error, 'code')) {
+      switch (error.code) {
+        case 'ENOENT':
+          message = 'There was an error reading the ' + chalk.yellow('package.json');
+          break;
+        case 'REACT_NATIVE':
+          message = 'It must be a ' + chalk.yellow('React Native') + ' project';
+          break;
+      }
     }
 
-    if (!_.has(data.dependencies, 'react') || !_.has(data.dependencies, 'react-native')) {
-      console.error('It must react-native project')
-    }
-
-    console.log(data.dependencies);
-    console.log(typeof data)
-  });
+    throw {message};
+  }
 };
 
 const init = (option) => {
@@ -70,50 +77,51 @@ const getAssetsPath = async () => {
 
   // Get npm global path
   const { stdout, stderr } = await exec('npm root -g');
-  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/'
+  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/';
 
-  return (env === 'prod') ? globalPath : 'assets/';
+  return (env === 'prod') ? globalPath : '../assets/';
 };
 
 const structure = async () => {
+  try {
+    // Check if have package.json and if it is react native project
+    await checkIfReactNativeProject();
 
-  checkIfReactNativeProject();
+    const assetsPath = await getAssetsPath();
+    const base = 'src/';
+    const paths = await Promise.all([
+      makeDir(base + 'services'),
+      makeDir(base + 'forms'),
+      makeDir(base + 'environments'),
+      makeDir(base + 'components'),
+      makeDir(base + 'screens'),
+      makeDir(base + 'redux'),
+      makeDir(base + 'models'),
+      makeDir(base + 'redux/reducers'),
+      makeDir(base + 'redux/actions'),
+      makeDir(base + 'redux/types'),
+      makeDir(base + 'navigation'),
+      makeDir(base + 'helpers'),
+      makeDir(base + 'theme'),
+      makeDir(base + 'assets/styles'),
+      makeDir(base + 'assets/html'),
+      makeDir(base + 'assets/images'),
+      makeDir(base + 'assets/sounds'),
+    ]);
 
-  /*
-  const assetsPath = await getAssetsPath();
-  const base = (env === 'prod') ? 'src/' : 'test/src/';
-  const paths = await Promise.all([
-    makeDir(base + 'services'),
-    makeDir(base + 'forms'),
-    makeDir(base + 'environments'),
-    makeDir(base + 'components'),
-    makeDir(base + 'screens'),
-    makeDir(base + 'redux'),
-    makeDir(base + 'models'),
-    makeDir(base + 'redux/reducers'),
-    makeDir(base + 'redux/actions'),
-    makeDir(base + 'redux/types'),
-    makeDir(base + 'navigation'),
-    makeDir(base + 'helpers'),
-    makeDir(base + 'theme'),
-    makeDir(base + 'assets/styles'),
-    makeDir(base + 'assets/html'),
-    makeDir(base + 'assets/images'),
-    makeDir(base + 'assets/sounds'),
-  ]);
+    // Added .gitkeep
+    for (let path of paths) {
+      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
+    }
 
-  // Added .gitkeep
-  for (let path of paths) {
-    fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
-  }
+    // Added environment
+    fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
+    fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
+    //log(chalk.white('The directory structure is ready'));
 
-  // Added environment
-  fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
-  fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-  log(chalk.white('The directory structure is ready'));
+    log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
 
-  // log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
-
+    /*
   const questions = [
     {
       type : 'confirm',
@@ -130,6 +138,13 @@ const structure = async () => {
         // log(chalk.white('Installing ') + chalk.white('react-navigation...'));
       }
     });*/
+  } catch (error) {
+    let message = 'There was an unknown error';
+    if (_.has(error, 'message')) {
+      message = error.message;
+    }
+    log(message);
+  }
 };
 
 module.exports = {
