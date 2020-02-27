@@ -5,7 +5,7 @@ const figlet = require('figlet');
 const log = console.log;
 
 const printLogo = () => {
-  log(chalk.blue(figlet.textSync('React Native Rad', { horizontalLayout: 'full' })));
+  log(chalk.blue(figlet.textSync('RN RAD', { horizontalLayout: 'full' })));
   log('');
 };
 

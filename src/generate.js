@@ -5,6 +5,8 @@ const inquirer = require('inquirer');
 const makeDir = require('make-dir');
 const help = require('./help');
 const fs = require('fs');
+const readJson = require('read-package-json');
+const _ = require('lodash');
 
 const log = console.log;
 let env = 'prod';
@@ -17,11 +19,27 @@ const test = () => {
   console.log(env);
 };
 
+const checkIfReactNativeProject = () => {
+  readJson('package.json', false, false, function (er, data) {
+    if (er) {
+      console.error('There was an error reading the package.json');
+      return
+    }
+
+    if (!_.has(data.dependencies, 'react') || !_.has(data.dependencies, 'react-native')) {
+      console.error('It must react-native project')
+    }
+
+    console.log(data.dependencies);
+    console.log(typeof data)
+  });
+};
+
 const init = (option) => {
   // Choice option
   switch (option) {
     case 'structure':
-      structure();
+      structure().then(() => {});
       break;
     case 'help':
       help.printLogo();
@@ -55,14 +73,15 @@ const getAssetsPath = async () => {
   const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/'
 
   return (env === 'prod') ? globalPath : 'assets/';
-}
+};
 
 const structure = async () => {
 
-  const assetsPath = await getAssetsPath()
+  checkIfReactNativeProject();
 
+  /*
+  const assetsPath = await getAssetsPath();
   const base = (env === 'prod') ? 'src/' : 'test/src/';
-
   const paths = await Promise.all([
     makeDir(base + 'services'),
     makeDir(base + 'forms'),
@@ -70,6 +89,7 @@ const structure = async () => {
     makeDir(base + 'components'),
     makeDir(base + 'screens'),
     makeDir(base + 'redux'),
+    makeDir(base + 'models'),
     makeDir(base + 'redux/reducers'),
     makeDir(base + 'redux/actions'),
     makeDir(base + 'redux/types'),
@@ -90,7 +110,7 @@ const structure = async () => {
   // Added environment
   fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
   fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-  log(chalk.white('The directory structure is ready '))
+  log(chalk.white('The directory structure is ready'));
 
   // log(chalk.white('The directory structure: ') + chalk.white.bgGreen.bold(' Is Ready '));
 
