@@ -3,8 +3,9 @@ const fs = require('fs');
 const { promisify } = require('util');
 const chalk = require('chalk');
 const readPackageJson = require('@pnpm/read-package-json');
+const validator = require('validator');
 const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 const getError = (error, resource = '') => {
   let message = 'There was an unknown error';
@@ -12,9 +13,10 @@ const getError = (error, resource = '') => {
     message = error.message;
   }
   if (_.has(error, 'code')) {
+    console.log(error);
     switch (error.code) {
       case 'ENOENT':
-        message = 'There was an error reading the ' + chalk.yellow(resource);
+        message = 'There was an error reading/writing the ' + chalk.yellow(resource);
         break;
       case 'REACT_NATIVE':
         message = 'It must be a ' + chalk.yellow('React Native') + ' project';
@@ -49,19 +51,43 @@ const readTemplate = async (path) => {
   }
 };
 
-const writeTemplate = async (path) => {
+const writeTemplate = async (path, content) => {
   try {
-    const data = await writeFile(path);
-    return data.toString();
+    await writeFile(path, content);
   } catch (error) {
     let message = getError(error, path);
     throw {message};
   }
 };
 
+const checkCurrentPath = (path) => {
+  return (path === '.') ? '' : path
+};
+
+const getPathFile = (path, name) => {
+  return (path !== '') ? path + '/' + name + '.js' : name + '.js';
+};
+
+const validate = (val, type) => {
+  switch (type) {
+    case 'alpha':
+      if (!validator.isAlpha(val)) {
+        return 'The component name must be only letters ' + chalk.yellow('(a-zA-Z)');
+      }
+      break;
+    case 'number':
+      break;
+  }
+
+  return true;
+};
+
 module.exports = {
   getError,
   readTemplate,
   writeTemplate,
-  checkPackage
+  checkPackage,
+  validate,
+  checkCurrentPath,
+  getPathFile
 };

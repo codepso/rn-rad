@@ -76,44 +76,56 @@ const component = async (args) => {
 
     const temp = args._;
     const params = temp.slice(2);
-    let componentName = '';
+    let name = '';
+    let path = 'src/components';
+
+    const questions = [
+      {
+        type : 'input',
+        name : 'name',
+        message : 'What will be the name?',
+        validate : async (input) => {
+          return helper.validate(input, 'alpha');
+        }
+      },
+      {
+        type : 'input',
+        name : 'path',
+        message : 'Where will it be saved?',
+        default: path
+      }
+    ];
 
     if (params.length === 0) {
-      const questions = [
-        {
-          type : 'input',
-          name : 'name',
-          message : 'What is your component name?'
-        }
-      ];
-
       const answers = await inquirer.prompt(questions);
-      if (answers.name) {
-        componentName = answers.name;
-      }
+      name = answers.name;
+      path = helper.checkCurrentPath(answers.path);
     } else {
-      componentName = params[0];
+      name = params[0];
+      if (!params[1]) {
+        const answers = await inquirer.prompt(questions.pop());
+        path = helper.checkCurrentPath(answers.path);
+      } else {
+        path = helper.checkCurrentPath(params[1]);
+      }
     }
-    const result = await template(file, componentName);
-    console.log(result);
+
+    await template(file, name, path);
   } catch (error) {
     log(helper.getError(error));
   }
 };
 
-const template = async (file, name) => {
-  if (!validator.isAlpha(name)) {
-    let message = 'The component name must be only letters ' + chalk.yellow('(a-zA-Z)');
-    throw {message};
-  }
-
+const template = async (file, name, path) => {
   Handlebars.registerHelper('top:', function (text) {
     return "{{top: 'never'}}"
   });
 
   const source = await helper.readTemplate('../assets/templates/' + file);
   const template = Handlebars.compile(source);
-  return template({ name });
+  const compiled =  template({ name });
+  const pathFile = helper.getPathFile(path, name);
+  await helper.writeTemplate(pathFile, compiled);
 };
 
 const structure = async () => {
