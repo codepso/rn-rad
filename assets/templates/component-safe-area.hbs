@@ -1,11 +1,10 @@
+import React from 'react';
 import {Text, View} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
-import {appStyle} from '../assets/styles';
-import React from 'react';
 
 const {{name}} = props => {
   return (
-    <SafeAreaView style={[appStyle.panSafeArea]} forceInset={{{top: 'never'}}}>
+    <SafeAreaView forceInset={{{top: 'never'}}}>
       <View>
         <Text>{{name}}</Text>
       </View>
