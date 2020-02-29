@@ -1,12 +1,15 @@
 "use strict";
 
+const minimist = require('minimist');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const makeDir = require('make-dir');
 const help = require('./help');
 const fs = require('fs');
 const _ = require('lodash');
-const readPackageJson = require('@pnpm/read-package-json');
+const helper = require('./helper');
+const Handlebars = require("handlebars");
+const validator = require('validator');
 
 const log = console.log;
 let env = 'prod';
@@ -19,34 +22,15 @@ const test = () => {
   console.log(env);
 };
 
-const checkIfReactNativeProject = async () => {
-  try {
-    const pkgJson = await readPackageJson.default('package.json');
-    if (!_.has(pkgJson['dependencies'], 'react') || !_.has(pkgJson['dependencies'], 'react-native')) {
-      throw {code: 'REACT_NATIVE'};
-    }
-  } catch (error) {
-    let message = 'There was an unknown error';
-    if (_.has(error, 'code')) {
-      switch (error.code) {
-        case 'ENOENT':
-          message = 'There was an error reading the ' + chalk.yellow('package.json');
-          break;
-        case 'REACT_NATIVE':
-          message = 'It must be a ' + chalk.yellow('React Native') + ' project';
-          break;
-      }
-    }
-
-    throw {message};
-  }
-};
-
 const init = (option) => {
+  const args = minimist(process.argv.slice(2));
   // Choice option
   switch (option) {
     case 'structure':
       structure().then(() => {});
+      break;
+    case 'component':
+      component(args).then(() => {});
       break;
     case 'help':
       help.printLogo();
@@ -82,10 +66,60 @@ const getAssetsPath = async () => {
   return (env === 'prod') ? globalPath : '../assets/';
 };
 
+const component = async (args) => {
+  try {
+    const isSafeAreaView = await helper.checkPackage('react-native-safe-area-view');
+    let file = 'component.hbs';
+    if (isSafeAreaView) {
+      file = 'component-safe-area.hbs';
+    }
+
+    const temp = args._;
+    const params = temp.slice(2);
+    let componentName = '';
+
+    if (params.length === 0) {
+      const questions = [
+        {
+          type : 'input',
+          name : 'name',
+          message : 'What is your component name?'
+        }
+      ];
+
+      const answers = await inquirer.prompt(questions);
+      if (answers.name) {
+        componentName = answers.name;
+      }
+    } else {
+      componentName = params[0];
+    }
+    const result = await template(file, componentName);
+    console.log(result);
+  } catch (error) {
+    log(helper.getError(error));
+  }
+};
+
+const template = async (file, name) => {
+  if (!validator.isAlpha(name)) {
+    let message = 'The component name must be only letters ' + chalk.yellow('(a-zA-Z)');
+    throw {message};
+  }
+
+  Handlebars.registerHelper('top:', function (text) {
+    return "{{top: 'never'}}"
+  });
+
+  const source = await helper.readTemplate('../assets/templates/' + file);
+  const template = Handlebars.compile(source);
+  return template({ name });
+};
+
 const structure = async () => {
   try {
     // Check if have package.json and if it is react native project
-    await checkIfReactNativeProject();
+    await helper.checkPackage();
 
     const assetsPath = await getAssetsPath();
     const base = 'src/';
@@ -139,11 +173,7 @@ const structure = async () => {
       }
     });*/
   } catch (error) {
-    let message = 'There was an unknown error';
-    if (_.has(error, 'message')) {
-      message = error.message;
-    }
-    log(message);
+    log(helper.getError(error));
   }
 };
 

@@ -54,7 +54,7 @@ const init = (env) => {
       break;
     default:
       help.printDefault();
-      break
+      break;
   }
 };
 
