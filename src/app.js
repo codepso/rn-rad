@@ -37,7 +37,7 @@ const init = (env) => {
     case 'generate':
     case 'g':
       const option = args._[1];
-      generate.init(option);
+      generate.main(option);
       break;
     case 'help':
     case 'h':

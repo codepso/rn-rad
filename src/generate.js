@@ -9,7 +9,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const helper = require('./helper');
 const Handlebars = require("handlebars");
-const validator = require('validator');
+const questions = require('./questions');
 
 const log = console.log;
 let env = 'prod';
@@ -22,10 +22,13 @@ const test = () => {
   console.log(env);
 };
 
-const init = (option) => {
+const main = (option) => {
   const args = minimist(process.argv.slice(2));
   // Choice option
   switch (option) {
+    case 'init':
+      init().then(() => {});
+      break;
     case 'structure':
       structure().then(() => {});
       break;
@@ -66,6 +69,14 @@ const getAssetsPath = async () => {
   return (env === 'prod') ? globalPath : '../assets/';
 };
 
+const init = async (args) => {
+  try {
+
+  } catch (error) {
+    log(helper.getError(error));
+  }
+};
+
 const component = async (args) => {
   try {
     const isSafeAreaView = await helper.checkPackage('react-native-safe-area-view');
@@ -76,34 +87,17 @@ const component = async (args) => {
 
     const temp = args._;
     const params = temp.slice(2);
-    let name = '';
-    let path = 'src/components';
-
-    const questions = [
-      {
-        type : 'input',
-        name : 'name',
-        message : 'What will be the name?',
-        validate : async (input) => {
-          return helper.validate(input, 'alpha');
-        }
-      },
-      {
-        type : 'input',
-        name : 'path',
-        message : 'Where will it be saved?',
-        default: path
-      }
-    ];
+    let name;
+    let path;
 
     if (params.length === 0) {
-      const answers = await inquirer.prompt(questions);
+      const answers = await inquirer.prompt(questions.COMPONENT);
       name = answers.name;
       path = helper.checkCurrentPath(answers.path);
     } else {
       name = params[0];
       if (!params[1]) {
-        const answers = await inquirer.prompt(questions.pop());
+        const answers = await inquirer.prompt(questions.COMPONENT.pop());
         path = helper.checkCurrentPath(answers.path);
       } else {
         path = helper.checkCurrentPath(params[1]);
@@ -130,22 +124,29 @@ const template = async (file, name, path) => {
 
 const structure = async () => {
   try {
+    const base = 'src/';
+    const existsDirectory = await helper.checkDirectory(base);
+    if (existsDirectory) {
+      throw {message : 'the ' + chalk.yellow('src') + ' directory already exists'};
+    }
+
     // Check if have package.json and if it is react native project
-    await helper.checkPackage();
+    let isRedux = await helper.checkPackage('redux');
+    if (!isRedux) {
+      const answers = await inquirer.prompt(questions.REDUX);
+      if (answers.redux) {
+        isRedux = true;
+      }
+    }
 
     const assetsPath = await getAssetsPath();
-    const base = 'src/';
-    const paths = await Promise.all([
+    let paths = await Promise.all([
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
       makeDir(base + 'environments'),
       makeDir(base + 'components'),
       makeDir(base + 'screens'),
-      makeDir(base + 'redux'),
       makeDir(base + 'models'),
-      makeDir(base + 'redux/reducers'),
-      makeDir(base + 'redux/actions'),
-      makeDir(base + 'redux/types'),
       makeDir(base + 'navigation'),
       makeDir(base + 'helpers'),
       makeDir(base + 'theme'),
@@ -155,6 +156,17 @@ const structure = async () => {
       makeDir(base + 'assets/sounds'),
     ]);
 
+    let reduxPaths = [];
+    if (isRedux) {
+      reduxPaths = await Promise.all([
+        makeDir(base + 'redux'),
+        makeDir(base + 'redux/reducers'),
+        makeDir(base + 'redux/actions'),
+        makeDir(base + 'redux/types'),
+      ]);
+    }
+    paths = paths.concat(reduxPaths);
+
     // Added .gitkeep
     for (let path of paths) {
       fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
@@ -163,33 +175,14 @@ const structure = async () => {
     // Added environment
     fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
     fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-    //log(chalk.white('The directory structure is ready'));
-
-    log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
-
-    /*
-  const questions = [
-    {
-      type : 'confirm',
-      name : 'isRedux',
-      message : 'Do you want to add redux?'
-    }
-  ];
-
-  /*inquirer
-    .prompt(questions)
-    .then(answers => {
-      if (answers.isRedux) {
-        console.log('Enter');
-        // log(chalk.white('Installing ') + chalk.white('react-navigation...'));
-      }
-    });*/
+    //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
+    log('The directory structure is ' + chalk.yellow('Ready'));
   } catch (error) {
     log(helper.getError(error));
   }
 };
 
 module.exports = {
-  init,
+  main,
   setEnv
 };

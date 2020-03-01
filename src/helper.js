@@ -6,6 +6,7 @@ const readPackageJson = require('@pnpm/read-package-json');
 const validator = require('validator');
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const accessDir = promisify(fs.access);
 
 const getError = (error, resource = '') => {
   let message = 'There was an unknown error';
@@ -38,6 +39,15 @@ const checkPackage = async (package = '') => {
   } catch (error) {
     let message = getError(error, path);
     throw {message};
+  }
+};
+
+const checkDirectory = async (dir) => {
+  try {
+    await accessDir(dir);
+    return true;
+  } catch (error) {
+    return false;
   }
 };
 
@@ -89,5 +99,6 @@ module.exports = {
   checkPackage,
   validate,
   checkCurrentPath,
-  getPathFile
+  getPathFile,
+  checkDirectory
 };
