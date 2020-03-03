@@ -79,4 +79,8 @@ typings/
 .dynamodb/
 
 .idea
+
+# Test
 test/src
+test/yarn.lock
+test/node_modules/

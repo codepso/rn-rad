@@ -1,29 +1,11 @@
 "use strict";
 
 const minimist = require('minimist');
-const chalk = require('chalk');
-const help = require('./help');
-const generate = require('./generate');
+const print = require('./utils/prints');
+const generate = require('./commands/generate');
+const architecture = require('./commands/architecture');
 
-const log = console.log;
-
-const printAuthors = () => {
-  log(chalk.white('Authors: '));
-  log(chalk.white('- Juan Minaya Leon ' + chalk.yellow('<minayaleon@gmail.com>')));
-};
-
-const printWelcome = () => {
-  help.printLogo();
-  log(chalk.white('usage: ') + chalk.white('react-init ' ) + chalk.yellow('[command] <options>'));
-  log('');
-  log('Available Commands:');
-  log(chalk.yellow('- generate (g)') +  chalk.white(' Generates and/or modifies files based on a schematic.'));
-  log(chalk.yellow('- help (h)') +  chalk.white(' Lists available commands and their short descriptions.'));
-  log(chalk.yellow('- Who (w)') +  chalk.white(' Lists authors'));
-  log(chalk.yellow('- version (v)') +  chalk.white(' Lists authors'));
-};
-
-const init = (env) => {
+const main = (env) => {
 
   generate.setEnv(env);
 
@@ -33,31 +15,34 @@ const init = (env) => {
     cmd = args._[0];
   }
 
+  const option = args._[1];
+
   switch (cmd) {
+    case 'i':
+      architecture.main(option);
+      break;
     case 'generate':
     case 'g':
-      const option = args._[1];
       generate.main(option);
       break;
     case 'help':
     case 'h':
-      printWelcome();
+      print.welcome();
       break;
     case 'who':
     case 'w':
-      help.printLogo();
-      printAuthors();
+      print.authors();
       break;
     case 'version':
     case 'v':
-      help.printVersion();
+      print.version();
       break;
     default:
-      help.printDefault();
+      print.help();
       break;
   }
 };
 
 module.exports = {
-  init
+  main
 };

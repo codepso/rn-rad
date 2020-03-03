@@ -4,22 +4,18 @@ const minimist = require('minimist');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const makeDir = require('make-dir');
-const help = require('./help');
+const print = require('../utils/prints');
 const fs = require('fs');
 const _ = require('lodash');
-const helper = require('./helper');
+const helper = require('../utils/helper');
 const Handlebars = require("handlebars");
-const questions = require('./questions');
+const questions = require('../config/questions');
 
 const log = console.log;
 let env = 'prod';
 
 const setEnv = (_env) => {
   env = _env;
-};
-
-const test = () => {
-  console.log(env);
 };
 
 const main = (option) => {
@@ -30,15 +26,21 @@ const main = (option) => {
       init().then(() => {});
       break;
     case 'structure':
-      structure().then(() => {});
+      structure().then(() => {
+        //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
+        log('The directory structure is ' + chalk.yellow('Ready'));
+      });
       break;
     case 'component':
       component(args).then(() => {});
       break;
+    case 'screen':
+      component(args, 'screen').then(() => {});
+      break;
     case 'help':
-      help.printLogo();
+      print.logo();
       log(chalk.white('Generates and/or modifies files based on a schematic.'));
-      log(chalk.white('usage: ') + chalk.white('react-init generate ' ) + chalk.yellow('<schematic> <options>'));
+      log(chalk.white('usage: ') + chalk.white('rn-rad generate ' ) + chalk.yellow('<schematic> <options>'));
       log('');
       log('Arguments:');
       log(chalk.yellow('- schematic: ') + chalk.white('The schematic or collection:schematic to generate. ' ));
@@ -52,7 +54,7 @@ const main = (option) => {
       log('- component');
       break;
     default:
-      help.printDefault();
+      print.help();
       break
   }
 };
@@ -77,7 +79,7 @@ const init = async (args) => {
   }
 };
 
-const component = async (args) => {
+const component = async (args, type = 'component') => {
   try {
     const isSafeAreaView = await helper.checkPackage('react-native-safe-area-view');
     let file = 'component.hbs';
@@ -89,15 +91,16 @@ const component = async (args) => {
     const params = temp.slice(2);
     let name;
     let path;
+    const q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
 
     if (params.length === 0) {
-      const answers = await inquirer.prompt(questions.COMPONENT);
+      const answers = await inquirer.prompt(q);
       name = answers.name;
       path = helper.checkCurrentPath(answers.path);
     } else {
       name = params[0];
       if (!params[1]) {
-        const answers = await inquirer.prompt(questions.COMPONENT.pop());
+        const answers = await inquirer.prompt(q.pop());
         path = helper.checkCurrentPath(answers.path);
       } else {
         path = helper.checkCurrentPath(params[1]);
@@ -175,8 +178,6 @@ const structure = async () => {
     // Added environment
     fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
     fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-    //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
-    log('The directory structure is ' + chalk.yellow('Ready'));
   } catch (error) {
     log(helper.getError(error));
   }

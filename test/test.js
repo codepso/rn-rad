@@ -1,5 +1,5 @@
 const app = require('../src/app');
-app.init('test');
+app.main('test');
 
 // Commands
 // ==================================
