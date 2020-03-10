@@ -59,18 +59,6 @@ const main = (option) => {
   }
 };
 
-const getAssetsPath = async () => {
-
-  const util = require('util');
-  const exec = util.promisify(require('child_process').exec);
-
-  // Get npm global path
-  const { stdout, stderr } = await exec('npm root -g');
-  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/';
-
-  return (env === 'prod') ? globalPath : '../assets/';
-};
-
 const init = async (args) => {
   try {
 
@@ -118,7 +106,7 @@ const template = async (file, name, path) => {
     return "{{top: 'never'}}"
   });
 
-  const assetsPath = helper.getAssetsPath(env);
+  const assetsPath = await helper.getAssetsPath(env);
   const source = await helper.readTemplate(assetsPath + 'templates/' + file);
   const template = Handlebars.compile(source);
   const compiled =  template({ name });
@@ -143,7 +131,7 @@ const structure = async () => {
       }
     }
 
-    const assetsPath = await getAssetsPath();
+    const assetsPath = await helper.getAssetsPath(env)
     let paths = await Promise.all([
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
