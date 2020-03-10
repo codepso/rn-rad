@@ -22,10 +22,10 @@ npm update -g @codepso/rn-rad
 ```
 ## Commands
 ```bash
-rn-rad i pacakges
+rn-rad i packages
 rn-rad g structure
-rn-rad g component
-rn-rad g screen
+rn-rad g component [name] [path]
+rn-rad g screen [name] [path]
 rn-rad help
 rn-rad version
 ```
