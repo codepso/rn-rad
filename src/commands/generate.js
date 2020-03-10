@@ -118,7 +118,8 @@ const template = async (file, name, path) => {
     return "{{top: 'never'}}"
   });
 
-  const source = await helper.readTemplate('../assets/templates/' + file);
+  const assetsPath = helper.getAssetsPath(env);
+  const source = await helper.readTemplate(assetsPath + 'templates/' + file);
   const template = Handlebars.compile(source);
   const compiled =  template({ name });
   const pathFile = helper.getPathFile(path, name);

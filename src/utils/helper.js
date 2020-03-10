@@ -70,6 +70,18 @@ const writeTemplate = async (path, content) => {
   }
 };
 
+const getAssetsPath = async (env) => {
+
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
+
+  // Get npm global path
+  const { stdout, stderr } = await exec('npm root -g');
+  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/assets/';
+
+  return (env === 'prod') ? globalPath : '../assets/';
+};
+
 const checkCurrentPath = (path) => {
   return (path === '.') ? '' : path
 };
@@ -100,5 +112,6 @@ module.exports = {
   validate,
   checkCurrentPath,
   getPathFile,
-  checkDirectory
+  checkDirectory,
+  getAssetsPath
 };
