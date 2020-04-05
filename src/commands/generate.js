@@ -95,6 +95,8 @@ const component = async (args, type = 'component') => {
       }
     }
 
+    name = type === 'screen'? name + 'Screen' : name;
+
     await template(file, name, path);
   } catch (error) {
     log(helper.getError(error));
@@ -131,7 +133,7 @@ const structure = async () => {
       }
     }
 
-    const assetsPath = await helper.getAssetsPath(env)
+    const assetsPath = await helper.getAssetsPath(env);
     let paths = await Promise.all([
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
@@ -174,5 +176,6 @@ const structure = async () => {
 
 module.exports = {
   main,
-  setEnv
+  setEnv,
+  template
 };

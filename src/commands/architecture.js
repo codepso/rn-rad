@@ -7,6 +7,9 @@ const questions = require('../config/questions');
 const helper = require('../utils/helper');
 const packages = require('../config/packages');
 const { spawn } = require('child_process');
+const makeDir = require('make-dir');
+const fs = require('fs');
+const generate = require('./generate');
 
 const log = console.log;
 let env = 'prod';
@@ -26,8 +29,56 @@ const main = (option) => {
       log('We\'re working on it');
       break;
     case 'auth':
-      log('We\'re working on it');
+      // log('We\'re working on it');
+      initAuth().then((path) => {
+        log('The ' + chalk.yellow(path) + ' structure is ' + chalk.yellow('Ready'));
+      });
       break;
+  }
+};
+
+const initAuth = async () => {
+  try {
+    const base = 'src/screens/auth';
+    const existsDirectory = await helper.checkDirectory(base);
+    if (existsDirectory) {
+      throw {message : 'the ' + chalk.yellow(base) + ' directory already exists'};
+    }
+
+    let paths = await Promise.all([
+      makeDir(base)
+    ]);
+
+    // Added .gitkeep
+    const assetsPath = await helper.getAssetsPath(env);
+    for (let path of paths) {
+      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
+    }
+
+    // Screens
+    const screens = [
+      'Welcome',
+      'SignIn',
+      'SignUp',
+      'ResetPassword',
+      'ChangePassword'
+    ];
+
+    const isSafeAreaView = await helper.checkPackage('react-native-safe-area-view');
+    let file = 'component.hbs';
+    if (isSafeAreaView) {
+      file = 'component-safe-area.hbs';
+    }
+
+    for (let screen of screens) {
+      const name = screen + 'Screen';
+      await generate.template(file, name, base);
+    }
+
+    return base;
+  } catch (error) {
+    log(helper.getError(error));
+    return 'e';
   }
 };
 
