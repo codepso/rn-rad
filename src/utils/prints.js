@@ -10,7 +10,7 @@ const logo = () => {
 };
 
 const version = () => {
-  log(chalk.white('Version ') + chalk.yellow('1.0.8'));
+  log(chalk.white('Version ') + chalk.yellow('1.0.14'));
   log('');
 };
 
