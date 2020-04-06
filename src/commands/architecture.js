@@ -89,6 +89,7 @@ const installPackages = async () => {
       dependencies = dependencies.concat(packages.REDUX);
     }
 
+    // checking 'react-native-safe-area-view',
     dependencies.unshift('add');
     const yarn = spawn('yarn', dependencies);
 

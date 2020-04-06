@@ -16,7 +16,6 @@ module.exports = Object.freeze({
     'axios',
     'formik',
     'react-native-keyboard-aware-scroll-view',
-    'react-native-safe-area-view',
   ],
   REDUX: [
     'redux',
