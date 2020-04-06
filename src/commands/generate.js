@@ -108,11 +108,11 @@ const template = async (file, name, path) => {
     return "{{top: 'never'}}"
   });
 
-  const textName = name.replace('Screen', '');
+  const content = name.replace('Screen', '');
   const assetsPath = await helper.getAssetsPath(env);
   const source = await helper.readTemplate(assetsPath + 'templates/' + file);
   const template = Handlebars.compile(source);
-  const compiled =  template({ name: textName });
+  const compiled =  template({ name, content });
   const pathFile = helper.getPathFile(path, name);
   await helper.writeTemplate(pathFile, compiled);
 };
