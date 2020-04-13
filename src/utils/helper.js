@@ -7,6 +7,7 @@ const validator = require('validator');
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const accessDir = promisify(fs.access);
+const accessResource = promisify(fs.access);
 
 const getError = (error, resource = '') => {
   let message = 'There was an unknown error';
@@ -25,6 +26,21 @@ const getError = (error, resource = '') => {
     }
   }
   return message;
+};
+
+const getVersion = async (env) => {
+  try {
+    const rootPath = await getRootPath(env);
+    const path = rootPath + 'package.json';
+    const pkgJson = await readPackageJson.default(path);
+    if (!_.has(pkgJson, 'version')) {
+      throw {code: 'PACKAGE_READ'};
+    }
+    return pkgJson['version'];
+  } catch (error) {
+    let message = getError(error, path);
+    throw {message};
+  }
 };
 
 const checkPackage = async (package = '') => {
@@ -51,6 +67,15 @@ const checkDirectory = async (dir) => {
   }
 };
 
+const checkResource = async (resource) => {
+  try {
+    await accessResource(resource);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 const readTemplate = async (path) => {
   try {
     const data = await readFile(path);
@@ -68,6 +93,18 @@ const writeTemplate = async (path, content) => {
     let message = getError(error, path);
     throw {message};
   }
+};
+
+const getRootPath = async (env) => {
+
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
+
+  // Get npm global path
+  const { stdout, stderr } = await exec('npm root -g');
+  const globalPath = stdout.replace(/\n$/, '') + '/@codepso/rn-rad/';
+
+  return (env === 'prod') ? globalPath : '../';
 };
 
 const getAssetsPath = async (env) => {
@@ -113,5 +150,7 @@ module.exports = {
   checkCurrentPath,
   getPathFile,
   checkDirectory,
-  getAssetsPath
+  getAssetsPath,
+  getVersion,
+  checkResource
 };

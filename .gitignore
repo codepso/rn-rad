@@ -79,6 +79,7 @@ typings/
 .dynamodb/
 
 .idea
+.DS_Store
 
 # Test
 test/src

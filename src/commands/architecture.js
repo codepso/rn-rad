@@ -10,14 +10,15 @@ const { spawn } = require('child_process');
 const makeDir = require('make-dir');
 const fs = require('fs');
 const generate = require('./generate');
-
 const log = console.log;
-let env = 'prod';
-let dependencies = packages.MAIN;
 
+// Environment
+let env = 'prod';
 const setEnv = (_env) => {
   env = _env;
 };
+
+let dependencies = packages.MAIN;
 
 const main = (option) => {
   const args = minimist(process.argv.slice(2));
@@ -26,7 +27,8 @@ const main = (option) => {
       installPackages().then(() => {});
       break;
     case 'project':
-      log('We\'re working on it');
+      // log('We\'re working on it');
+      initProject().then(() => {});
       break;
     case 'auth':
       // log('We\'re working on it');
@@ -34,6 +36,22 @@ const main = (option) => {
         log('The ' + chalk.yellow(path) + ' structure is ' + chalk.yellow('Ready'));
       });
       break;
+  }
+};
+
+const initProject = async () => {
+  try {
+    const resource = 'rn-rad.config.js';
+    const existsResource = await helper.checkResource(resource);
+    if (existsResource) {
+      throw {message : chalk.yellow(resource) + ' already exists'};
+    }
+
+    const assetsPath = await helper.getAssetsPath(env);
+    fs.copyFileSync(assetsPath + 'files/rn-rad.config.js',  'rn-rad.config.js');
+  } catch (error) {
+    log(helper.getError(error));
+    return 'e';
   }
 };
 

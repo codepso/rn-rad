@@ -2,15 +2,23 @@
 
 const chalk = require('chalk');
 const figlet = require('figlet');
+const helper = require('../utils/helper');
 const log = console.log;
+
+// Environment
+let env = 'prod';
+const setEnv = (_env) => {
+  env = _env;
+};
 
 const logo = () => {
   log(chalk.blue(figlet.textSync('rn-rad', { horizontalLayout: 'full' })));
   log('React Native with Rapid Application Development');
 };
 
-const version = () => {
-  log(chalk.white('Version ') + chalk.yellow('1.0.16'));
+const version = async () => {
+  const version = await helper.getVersion(env);
+  log(chalk.white('Version ') + chalk.yellow(version));
   log('');
 };
 
@@ -52,5 +60,6 @@ module.exports = {
   help,
   version,
   authors,
-  welcome
+  welcome,
+  setEnv,
 };

@@ -9,7 +9,6 @@ CLI for Rapid Application Development using React Native.
 - [Installation](#installation)
 - [Commands](#commands)
 - [License](#license)
-- [Links](#links)
 ## Requirements
 You need the following requirements:
  - Node 8+
@@ -23,11 +22,24 @@ npm update -g @codepso/rn-rad
 ## Commands
 ```bash
 rn-rad i packages
+rn-rad i project
 rn-rad g structure
 rn-rad g component [name] [path]
 rn-rad g screen [name] [path]
+rn-rad g form [name] [path] [screen=true]
 rn-rad help
 rn-rad version
+```
+#### command: i packages
+```bash
+rn-rad i packages
+cd ios && pod install
+```
+#### command: i project
+Add theme, styles, images and helpers to RN project, rn-rad.config.js will be created
+```bash
+rn-rad g structure (it must be first)
+rn-rad i project
 ```
 ## Architecture
 - React Native 0.6.1+
@@ -39,15 +51,3 @@ rn-rad version
 - Formik 
 ## License
 The React Init is licensed under the terms of the GPL Open Source license and is available for free.
-
-## Links
-- https://reactnative.dev
-- https://react-native-elements.github.io/react-native-elements
-- https://github.com/oblador/react-native-vector-icons
-- https://redux.js.org
-- http://www.codepso.com
-- https://github.com/timmydoza/directory-exists
-- https://github.com/sindresorhus/make-dir
-- https://github.com/patorjk/figlet.js
-- https://github.com/chalk/chalk
-- https://github.com/nodeca/js-yaml

@@ -1,13 +1,15 @@
 "use strict";
 
 const minimist = require('minimist');
-const print = require('./utils/prints');
+const prints = require('./utils/prints');
 const generate = require('./commands/generate');
 const architecture = require('./commands/architecture');
 
 const main = (env) => {
 
   generate.setEnv(env);
+  prints.setEnv(env);
+  architecture.setEnv(env);
 
   const args = minimist(process.argv.slice(2));
   let cmd = null;
@@ -27,18 +29,18 @@ const main = (env) => {
       break;
     case 'help':
     case 'h':
-      print.welcome();
+      prints.welcome();
       break;
     case 'who':
     case 'w':
-      print.authors();
+      prints.authors();
       break;
     case 'version':
     case 'v':
-      print.version();
+      prints.version().then(() => {});
       break;
     default:
-      print.help();
+      prints.help();
       break;
   }
 };
