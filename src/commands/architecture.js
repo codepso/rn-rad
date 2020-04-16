@@ -26,9 +26,17 @@ const main = (option) => {
     case 'packages':
       installPackages().then(() => {});
       break;
+    case 'structure':
+      initStructure().then(() => {
+        //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
+        log('The directory structure is ' + chalk.yellow('Ready'));
+      });
+      break;
     case 'project':
       // log('We\'re working on it');
-      initProject().then(() => {});
+      initProject().then(() => {
+        log('The project has been' + chalk.yellow('initialized'));
+      });
       break;
     case 'auth':
       // log('We\'re working on it');
@@ -36,6 +44,64 @@ const main = (option) => {
         log('The ' + chalk.yellow(path) + ' structure is ' + chalk.yellow('Ready'));
       });
       break;
+  }
+};
+
+const initStructure = async () => {
+  try {
+    const base = 'src/';
+    const existsDirectory = await helper.checkDirectory(base);
+    if (existsDirectory) {
+      throw {message : 'the ' + chalk.yellow('src') + ' directory already exists'};
+    }
+
+    // Check if have package.json and if it is react native project
+    let isRedux = await helper.checkPackage('redux');
+    if (!isRedux) {
+      const answers = await inquirer.prompt(questions.REDUX);
+      if (answers.redux) {
+        isRedux = true;
+      }
+    }
+
+    const assetsPath = await helper.getAssetsPath(env);
+    let paths = await Promise.all([
+      makeDir(base + 'services'),
+      makeDir(base + 'forms'),
+      makeDir(base + 'environments'),
+      makeDir(base + 'components'),
+      makeDir(base + 'screens'),
+      makeDir(base + 'models'),
+      makeDir(base + 'navigation'),
+      makeDir(base + 'helpers'),
+      makeDir(base + 'theme'),
+      makeDir(base + 'assets/styles'),
+      makeDir(base + 'assets/html'),
+      makeDir(base + 'assets/images'),
+      makeDir(base + 'assets/sounds'),
+    ]);
+
+    let reduxPaths = [];
+    if (isRedux) {
+      reduxPaths = await Promise.all([
+        makeDir(base + 'redux'),
+        makeDir(base + 'redux/reducers'),
+        makeDir(base + 'redux/actions'),
+        makeDir(base + 'redux/types'),
+      ]);
+    }
+    paths = paths.concat(reduxPaths);
+
+    // Added .gitkeep
+    for (let path of paths) {
+      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
+    }
+
+    // Added environment
+    fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
+    fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
+  } catch (error) {
+    log(helper.getError(error));
   }
 };
 
@@ -121,17 +187,33 @@ const installPackages = async () => {
 
     yarn.on('close', (code) => {
       dependencies.shift();
-      log('');
-      log('The following packages have been ' + chalk.yellow('installed') + ':');
-      log('');
-      dependencies.forEach(element => log('- ' + element));
-      log('');
-      log(chalk.yellow('Done!'));
+      installPods(dependencies).then(() => {
+        console.log(dependencies);
+        log('');
+        log(chalk.yellow('Done!'));
+      });
     });
 
   } catch (error) {
     log(helper.getError(error));
   }
+};
+
+const installPods = async (dependencies) => {
+  const npx = spawn('npx', ['pod-install ios']);
+  npx.stdout.on('data', (data) => {
+    log(`${data}`);
+  });
+
+  npx.stderr.on('data', (data) => {
+    // console.error(`stderr: ${data}`);
+  });
+
+  npx.on('close', (code) => {
+    log('The following packages have been ' + chalk.yellow('installed') + ':');
+    log('');
+    dependencies.forEach(element => log('- ' + element));
+  });
 };
 
 module.exports = {

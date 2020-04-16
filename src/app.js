@@ -4,6 +4,7 @@ const minimist = require('minimist');
 const prints = require('./utils/prints');
 const generate = require('./commands/generate');
 const architecture = require('./commands/architecture');
+const helper = require('./utils/helper');
 
 const main = (env) => {
 
@@ -18,7 +19,6 @@ const main = (env) => {
   }
 
   const option = args._[1];
-
   switch (cmd) {
     case 'i':
       architecture.main(option);
@@ -29,18 +29,23 @@ const main = (env) => {
       break;
     case 'help':
     case 'h':
-      prints.welcome();
+      prints.help();
+      helper.endLine();
       break;
     case 'who':
     case 'w':
       prints.authors();
+      helper.endLine();
       break;
     case 'version':
     case 'v':
-      prints.version().then(() => {});
+      prints.version().then(() => {
+        helper.endLine();
+      });
       break;
     default:
-      prints.help();
+      prints.main();
+      helper.endLine();
       break;
   }
 };

@@ -12,7 +12,7 @@ CLI for Rapid Application Development using React Native.
 ## Requirements
 You need the following requirements:
  - Node 8+
- - NPM
+ - NPM & NPX
  - React Native CLI
 ## Installation
 ```bash

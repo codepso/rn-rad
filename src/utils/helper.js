@@ -141,6 +141,10 @@ const validate = (val, type) => {
   return true;
 };
 
+const endLine = () => {
+  console.log('');
+};
+
 module.exports = {
   getError,
   readTemplate,
@@ -152,5 +156,6 @@ module.exports = {
   checkDirectory,
   getAssetsPath,
   getVersion,
-  checkResource
+  checkResource,
+  endLine
 };

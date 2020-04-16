@@ -22,13 +22,9 @@ const main = (option) => {
   const args = minimist(process.argv.slice(2));
   // Choice option
   switch (option) {
-    case 'init':
-      init().then(() => {});
-      break;
-    case 'structure':
-      structure().then(() => {
-        //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
-        log('The directory structure is ' + chalk.yellow('Ready'));
+    case 'theme':
+      theme(args).then((name) => {
+        log('Theme' + chalk.yellow(name) + ' has been created');
       });
       break;
     case 'component':
@@ -59,9 +55,11 @@ const main = (option) => {
   }
 };
 
-const init = async (args) => {
+const theme = async (args) => {
   try {
-
+    const temp = args._;
+    const params = temp.slice(2);
+    console.log(params);
   } catch (error) {
     log(helper.getError(error));
   }
@@ -115,64 +113,6 @@ const template = async (file, name, path) => {
   const compiled =  template({ name, content });
   const pathFile = helper.getPathFile(path, name);
   await helper.writeTemplate(pathFile, compiled);
-};
-
-const structure = async () => {
-  try {
-    const base = 'src/';
-    const existsDirectory = await helper.checkDirectory(base);
-    if (existsDirectory) {
-      throw {message : 'the ' + chalk.yellow('src') + ' directory already exists'};
-    }
-
-    // Check if have package.json and if it is react native project
-    let isRedux = await helper.checkPackage('redux');
-    if (!isRedux) {
-      const answers = await inquirer.prompt(questions.REDUX);
-      if (answers.redux) {
-        isRedux = true;
-      }
-    }
-
-    const assetsPath = await helper.getAssetsPath(env);
-    let paths = await Promise.all([
-      makeDir(base + 'services'),
-      makeDir(base + 'forms'),
-      makeDir(base + 'environments'),
-      makeDir(base + 'components'),
-      makeDir(base + 'screens'),
-      makeDir(base + 'models'),
-      makeDir(base + 'navigation'),
-      makeDir(base + 'helpers'),
-      makeDir(base + 'theme'),
-      makeDir(base + 'assets/styles'),
-      makeDir(base + 'assets/html'),
-      makeDir(base + 'assets/images'),
-      makeDir(base + 'assets/sounds'),
-    ]);
-
-    let reduxPaths = [];
-    if (isRedux) {
-      reduxPaths = await Promise.all([
-        makeDir(base + 'redux'),
-        makeDir(base + 'redux/reducers'),
-        makeDir(base + 'redux/actions'),
-        makeDir(base + 'redux/types'),
-      ]);
-    }
-    paths = paths.concat(reduxPaths);
-
-    // Added .gitkeep
-    for (let path of paths) {
-      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
-    }
-
-    // Added environment
-    fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
-    fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-  } catch (error) {
-    log(helper.getError(error));
-  }
 };
 
 module.exports = {
