@@ -107,7 +107,7 @@ const template = async (file, name, path) => {
   });
 
   const content = name.replace('Screen', '');
-  const assetsPath = await helper.getAssetsPath(env);
+  const assetsPath = await helper.getRootPath(env) + 'assets/';
   const source = await helper.readTemplate(assetsPath + 'templates/' + file);
   const template = Handlebars.compile(source);
   const compiled =  template({ name, content });

@@ -64,7 +64,7 @@ const initStructure = async () => {
       }
     }
 
-    const assetsPath = await helper.getAssetsPath(env);
+    const assetsPath = await helper.getRootPath(env) + 'assets/';
     let paths = await Promise.all([
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
@@ -113,7 +113,7 @@ const initProject = async () => {
       throw {message : chalk.yellow(resource) + ' already exists'};
     }
 
-    const assetsPath = await helper.getAssetsPath(env);
+    const assetsPath = await helper.getRootPath(env) + 'assets/';
     fs.copyFileSync(assetsPath + 'files/rn-rad.config.js',  'rn-rad.config.js');
   } catch (error) {
     log(helper.getError(error));
@@ -134,7 +134,7 @@ const initAuth = async () => {
     ]);
 
     // Added .gitkeep
-    const assetsPath = await helper.getAssetsPath(env);
+    const assetsPath = await helper.getRootPath(env) + 'assets/';
     for (let path of paths) {
       fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
     }
@@ -206,7 +206,7 @@ const installPods = async (dependencies) => {
   });
 
   npx.stderr.on('data', (data) => {
-    // console.error(`stderr: ${data}`);
+    console.error(`stderr: ${data}`);
   });
 
   npx.on('close', (code) => {
