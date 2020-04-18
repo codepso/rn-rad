@@ -41,7 +41,7 @@ Create the directory structure
 ```bash
 rn-rad i structure
 ```
-<h1 align="center">
+<h1>
   <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-3.jpg" alt="Codepso">
 </h1>
 
