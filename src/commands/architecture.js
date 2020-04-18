@@ -187,11 +187,7 @@ const installPackages = async () => {
 
     yarn.on('close', (code) => {
       dependencies.shift();
-      installPods(dependencies).then(() => {
-        console.log(dependencies);
-        log('');
-        log(chalk.yellow('Done!'));
-      });
+      installPods(dependencies).then(() => {});
     });
 
   } catch (error) {
@@ -200,7 +196,7 @@ const installPackages = async () => {
 };
 
 const installPods = async (dependencies) => {
-  const npx = spawn('npx', ['pod-install ios']);
+  const npx = spawn('npx', ['pod-install', 'ios']);
   npx.stdout.on('data', (data) => {
     log(`${data}`);
   });
@@ -210,9 +206,11 @@ const installPods = async (dependencies) => {
   });
 
   npx.on('close', (code) => {
-    log('The following packages have been ' + chalk.yellow('installed') + ':');
+    log('The following packages have been ' + chalk.yellow('installed') + ' (pod\'s included):');
     log('');
     dependencies.forEach(element => log('- ' + element));
+    log('');
+    log(chalk.yellow('Done!'));
   });
 };
 

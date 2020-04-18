@@ -5,3 +5,4 @@ app.main('stage');
 // ==================================
 // cd test
 // node stage.js i packages
+// TestRNRad
