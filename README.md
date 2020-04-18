@@ -42,7 +42,7 @@ Create the directory structure
 rn-rad i structure
 ```
 <h1 align="center">
-  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-1.jpg" alt="Codepso">
+  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-3.jpg" alt="Codepso">
 </h1>
 
 #### command: i project
