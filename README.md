@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-h-4.jpg" alt="Codepso" width="900">
+  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-h-5.jpg" alt="Codepso" width="900">
 </h1>
 
 # rn-rad
