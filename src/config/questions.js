@@ -6,7 +6,7 @@ module.exports = Object.freeze({
     {
       type : 'input',
       name : 'name',
-      message : 'What will be the name?',
+      message : 'What will be the name',
       validate : async (input) => {
         return helper.validate(input, 'alpha');
       }
@@ -14,7 +14,7 @@ module.exports = Object.freeze({
     {
       type : 'input',
       name : 'path',
-      message : 'Where will it be saved?',
+      message : 'Where will it be saved',
       default: constants.COMPONENT_PATH
     }
   ],
@@ -22,7 +22,7 @@ module.exports = Object.freeze({
     {
       type : 'input',
       name : 'name',
-      message : 'What will be the name?',
+      message : 'What will be the name',
       validate : async (input) => {
         return helper.validate(input, 'alpha');
       }
@@ -30,7 +30,7 @@ module.exports = Object.freeze({
     {
       type : 'input',
       name : 'path',
-      message : 'Where will it be saved?',
+      message : 'Where will it be saved',
       default: constants.SCREEN_PATH
     }
   ],
@@ -38,7 +38,14 @@ module.exports = Object.freeze({
     {
       type : 'confirm',
       name : 'redux',
-      message : 'Will you use Redux?'
+      message : 'Will you use Redux'
+    }
+  ],
+  PROJECT: [
+    {
+      type : 'confirm',
+      name : 'resources',
+      message : 'Initialize with resources (themes, styles, etc.)'
     }
   ]
 });

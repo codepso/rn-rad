@@ -4,4 +4,4 @@ app.main('test');
 // Commands
 // ==================================
 // cd test
-// node test.js g structure
+// node test.js i structure

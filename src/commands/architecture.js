@@ -8,7 +8,7 @@ const helper = require('../utils/helper');
 const packages = require('../config/packages');
 const { spawn } = require('child_process');
 const makeDir = require('make-dir');
-const fs = require('fs');
+const fs = require('fs-extra');
 const generate = require('./generate');
 const log = console.log;
 
@@ -27,15 +27,23 @@ const main = (option) => {
       installPackages().then(() => {});
       break;
     case 'structure':
-      initStructure().then(() => {
+      initStructure(args).then(() => {
         //log(chalk.white('The directory structure: ') + chalk.black.bgGreen.bold(' Is Ready '));
         log('The directory structure is ' + chalk.yellow('Ready'));
+        helper.endLine();
+      }, (e) => {
+        log(helper.getError(e.message));
+        helper.endLine();
       });
       break;
     case 'project':
-      // log('We\'re working on it');
-      initProject().then(() => {
-        log('The project has been' + chalk.yellow('initialized'));
+      initProject(args).then((logs) => {
+        log('The project has been ' + chalk.yellow('initialized'));
+        helper.renderList(logs);
+        helper.endLine();
+      }, (e) => {
+        log(helper.getError(e.message));
+        helper.endLine();
       });
       break;
     case 'auth':
@@ -47,22 +55,16 @@ const main = (option) => {
   }
 };
 
-const initStructure = async () => {
+const initStructure = async (args) => {
   try {
     const base = 'src/';
-    const existsDirectory = await helper.checkDirectory(base);
-    if (existsDirectory) {
+    if (fs.pathExistsSync(base)) {
       throw {message : 'the ' + chalk.yellow('src') + ' directory already exists'};
     }
 
-    // Check if have package.json and if it is react native project
-    let isRedux = await helper.checkPackage('redux');
-    if (!isRedux) {
-      const answers = await inquirer.prompt(questions.REDUX);
-      if (answers.redux) {
-        isRedux = true;
-      }
-    }
+    // With redux?
+    const option = helper.readOption(args, ['r', 'redux']);
+    let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
 
     const assetsPath = await helper.getRootPath(env) + 'assets/';
     let paths = await Promise.all([
@@ -74,7 +76,7 @@ const initStructure = async () => {
       makeDir(base + 'models'),
       makeDir(base + 'navigation'),
       makeDir(base + 'helpers'),
-      makeDir(base + 'theme'),
+      makeDir(base + 'themes'),
       makeDir(base + 'assets/styles'),
       makeDir(base + 'assets/html'),
       makeDir(base + 'assets/images'),
@@ -82,7 +84,7 @@ const initStructure = async () => {
     ]);
 
     let reduxPaths = [];
-    if (isRedux) {
+    if (withRedux) {
       reduxPaths = await Promise.all([
         makeDir(base + 'redux'),
         makeDir(base + 'redux/reducers'),
@@ -94,30 +96,77 @@ const initStructure = async () => {
 
     // Added .gitkeep
     for (let path of paths) {
-      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
+      fs.copySync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
     }
 
     // Added environment
-    fs.copyFileSync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
-    fs.copyFileSync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
-  } catch (error) {
-    log(helper.getError(error));
+    fs.copySync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
+    fs.copySync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
+  } catch (e) {
+    throw new Error(e.message);
   }
 };
 
-const initProject = async () => {
+const initProject = async (args) => {
   try {
-    const resource = 'rn-rad.config.js';
-    const existsResource = await helper.checkResource(resource);
-    if (existsResource) {
-      throw {message : chalk.yellow(resource) + ' already exists'};
+    let logs = [];
+    const rootPath = await helper.getRootPath(env);
+
+    const pathResource = 'rn-rad.config.js';
+    if (fs.pathExistsSync(pathResource)) {
+      throw {message : chalk.yellow(pathResource) + ' already exists'};
     }
 
-    const assetsPath = await helper.getRootPath(env) + 'assets/';
-    fs.copyFileSync(assetsPath + 'files/rn-rad.config.js',  'rn-rad.config.js');
-  } catch (error) {
-    log(helper.getError(error));
-    return 'e';
+    fs.copySync(rootPath + 'assets/files/rn-rad.config.js',  'rn-rad.config.js');
+
+    // With resoruces?
+    const option = helper.readOption(args, ['r', 'resources']);
+    let withResources = (option === null) ? (await inquirer.prompt(questions.PROJECT)).resources : option;
+
+    if (withResources) {
+      // Theme
+      const pathTheme = 'src/themes/main';
+      if (!fs.pathExistsSync(pathTheme)) {
+        fs.copySync(rootPath + 'assets/files/themes/main',  pathTheme);
+      } else {
+        logs.push(chalk.yellow(pathTheme) + ' hasn\'t been copied because it exists');
+      }
+
+      const indexTheme = 'src/themes/index.js';
+      if (!fs.pathExistsSync(indexTheme)) {
+        fs.copySync(rootPath + 'assets/files/themes/index.js',  indexTheme);
+      } else {
+        logs.push(chalk.yellow(indexTheme) + ' directory hasn\'t been copied because it exists');
+      }
+
+      // Assets
+      const assetsLogo = 'src/assets/images/logo.png';
+      if (!fs.pathExistsSync(assetsLogo)) {
+        fs.copySync(rootPath + 'assets/files/assets/images/logo.png',  assetsLogo);
+        fs.copySync(rootPath + 'assets/files/assets/images/logo@2x.png',  'src/assets/images/logo@2x.png');
+        fs.copySync(rootPath + 'assets/files/assets/images/logo@3x.png',  'src/assets/images/logo@3x.png');
+      } else {
+        logs.push(chalk.yellow(assetsLogo) + ' hasn\'t been copied because it exists');
+      }
+
+      const assetsFormStyle = 'src/assets/styles/form.js';
+      if (!fs.pathExistsSync(assetsFormStyle)) {
+        fs.copySync(rootPath + 'assets/files/assets/styles/form.js',  assetsFormStyle);
+      } else {
+        logs.push(chalk.yellow(assetsFormStyle) + ' hasn\'t been copied because it exists');
+      }
+
+      const assetsIndexStyle = 'src/assets/styles/index.js';
+      if (!fs.pathExistsSync(assetsIndexStyle)) {
+        fs.copySync(rootPath + 'assets/files/assets/styles/index.js',  assetsIndexStyle);
+      } else {
+        logs.push(chalk.yellow(assetsIndexStyle) + ' hasn\'t been copied because it exists');
+      }
+    }
+
+    return logs;
+  } catch (e) {
+    throw new Error(e.message);
   }
 };
 
@@ -136,7 +185,7 @@ const initAuth = async () => {
     // Added .gitkeep
     const assetsPath = await helper.getRootPath(env) + 'assets/';
     for (let path of paths) {
-      fs.copyFileSync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
+      fs.copySync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
     }
 
     // Screens

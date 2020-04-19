@@ -3,10 +3,7 @@
 const minimist = require('minimist');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
-const makeDir = require('make-dir');
 const print = require('../utils/prints');
-const fs = require('fs');
-const _ = require('lodash');
 const helper = require('../utils/helper');
 const Handlebars = require("handlebars");
 const questions = require('../config/questions');
@@ -33,24 +30,8 @@ const main = (option) => {
     case 'screen':
       component(args, 'screen').then(() => {});
       break;
-    case 'help':
-      print.logo();
-      log(chalk.white('Generates and/or modifies files based on a schematic.'));
-      log(chalk.white('usage: ') + chalk.white('rn-rad generate ' ) + chalk.yellow('<schematic> <options>'));
-      log('');
-      log('Arguments:');
-      log(chalk.yellow('- schematic: ') + chalk.white('The schematic or collection:schematic to generate. ' ));
-      log('');
-      log('Options:');
-      log(chalk.yellow('- name: ') + chalk.white('The component name in CamelCase ' ));
-      log(chalk.gray('  Only available for component schematic'));
-      log('');
-      log('Schematics:');
-      log('- structure');
-      log('- component');
-      break;
     default:
-      print.help();
+      print.main();
       break
   }
 };

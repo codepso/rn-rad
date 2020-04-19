@@ -85,3 +85,4 @@ typings/
 test/src
 test/yarn.lock
 test/node_modules/
+test/rn-rad.config.js

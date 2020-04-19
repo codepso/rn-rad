@@ -11,11 +11,13 @@ const accessResource = promisify(fs.access);
 
 const getError = (error, resource = '') => {
   let message = 'There was an unknown error';
+  if (typeof error === 'string') {
+    message = error;
+  }
   if (_.has(error, 'message')) {
     message = error.message;
   }
   if (_.has(error, 'code')) {
-    console.log(error);
     switch (error.code) {
       case 'ENOENT':
         message = 'There was an error reading/writing the ' + chalk.yellow(resource);
@@ -25,7 +27,31 @@ const getError = (error, resource = '') => {
         break;
     }
   }
-  return message;
+  return chalk.red('E -> ') +  message;
+};
+
+const readOption = (args, keys, type = 'bool') => {
+  let value = null;
+  for (let i = 0; i < keys.length; i++) {
+    if (_.has(args, keys[i])) {
+      value = convertTo(args[keys[i]], type);
+      break;
+    }
+  }
+  return value;
+};
+
+const convertTo = (value, to) => {
+  let converted = value;
+  switch (to) {
+    case 'bool':
+      converted = (value === true || value === 'true' || value === '1' || value === 1);
+      break;
+    case 'int':
+      break;
+  }
+
+  return converted;
 };
 
 const getVersion = async (env) => {
@@ -143,6 +169,12 @@ const getLocalPath = (env) => {
   return local;
 };
 
+const renderList = (logs) => {
+  if (logs.length > 0) {
+    logs.forEach(element => console.log('- ' + element));
+  }
+};
+
 const endLine = () => {
   console.log('');
 };
@@ -159,5 +191,7 @@ module.exports = {
   getRootPath,
   getVersion,
   checkResource,
-  endLine
+  endLine,
+  renderList,
+  readOption
 };

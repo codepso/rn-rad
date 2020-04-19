@@ -1,5 +1,5 @@
 config = {
-  token: '5024784567gatr456yhut7yh',
+  token: '5024abhm784567gatr456yhut7yh00098ilmkqer456',
   safeAreaView: true,
   forms: {
     withScreen: true,
