@@ -38,15 +38,15 @@ const help = () => {
   log('');
   log('Available Commands:');
   log('');
-  log(chalk.yellow('Architecture (i)'));
+  log(chalk.yellow('Initializers (i)'));
   log(chalk.yellow(' - i packages [redux=true]'));
   log(chalk.yellow(' - i structure [redux=true]'));
-  log(chalk.yellow(' - i project [redux=true]') + chalk.white(' (working on it)'));
+  log(chalk.yellow(' - i project [redux=true]'));
   log(chalk.yellow(' - i auth') + chalk.white(' (working on it)'));
   log(chalk.yellow('Generators (g)') +  chalk.white(' '));
   log(chalk.yellow(' - g component [name] [path]'));
   log(chalk.yellow(' - g screen [name] [path]'));
-  log(chalk.yellow(' - g theme [name]'));
+  log(chalk.yellow(' - g theme [name]' + chalk.white(' (working on it)')));
   log(chalk.yellow(' - g form [name]' + chalk.white(' (working on it)')));
   // log(chalk.yellow('- help (h)') +  chalk.white(' Lists available commands and their short descriptions.'));
   log(chalk.yellow('About'));

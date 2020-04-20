@@ -24,7 +24,10 @@ const main = (option) => {
   const args = minimist(process.argv.slice(2));
   switch (option) {
     case 'packages':
-      installPackages().then(() => {});
+      installPackages(args).then((args) => {}, (e) => {
+        log(helper.getError(e.message));
+        helper.endLine();
+      });
       break;
     case 'structure':
       initStructure(args).then(() => {
@@ -209,16 +212,19 @@ const initAuth = async () => {
     }
 
     return base;
-  } catch (error) {
-    log(helper.getError(error));
-    return 'e';
+  } catch (e) {
+    throw new Error(e.message);
   }
 };
 
-const installPackages = async () => {
+const installPackages = async (args) => {
   try {
-    const answers = await inquirer.prompt(questions.REDUX);
-    if (answers.redux) {
+
+    // With redux?
+    const option = helper.readOption(args, ['r', 'redux']);
+    let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
+
+    if (withRedux) {
       dependencies = dependencies.concat(packages.REDUX);
     }
 
@@ -239,8 +245,8 @@ const installPackages = async () => {
       installPods(dependencies).then(() => {});
     });
 
-  } catch (error) {
-    log(helper.getError(error));
+  } catch (e) {
+    throw new Error(e.message);
   }
 };
 
