@@ -41,7 +41,7 @@ About
 rn-rad help
 rn-rad version
 ```
-#### command: i packages
+#### command: i packages [options]
 install the most used [packages](#packages) and pod's (ios)
 
 --redux (-r) Flag to indicate if a redux packages are added, default: true
