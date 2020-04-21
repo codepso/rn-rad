@@ -7,10 +7,10 @@ const print = require('../utils/prints');
 const helper = require('../utils/helper');
 const Handlebars = require("handlebars");
 const questions = require('../config/questions');
+const fs = require('fs-extra');
 
 const log = console.log;
 let env = 'prod';
-
 const setEnv = (_env) => {
   env = _env;
 };
@@ -21,7 +21,11 @@ const main = (option) => {
   switch (option) {
     case 'theme':
       theme(args).then((name) => {
-        log('Theme' + chalk.yellow(name) + ' has been created');
+        log('Theme: ' + chalk.yellow(name) + ' has been created');
+        helper.endLine();
+      }, (e) => {
+        log(helper.getError(e.message));
+        helper.endLine();
       });
       break;
     case 'component':
@@ -38,11 +42,26 @@ const main = (option) => {
 
 const theme = async (args) => {
   try {
-    const temp = args._;
-    const params = temp.slice(2);
-    console.log(params);
-  } catch (error) {
-    log(helper.getError(error));
+    const themeName = helper.readArg(args);
+    const themePath = 'src/themes/' + themeName;
+
+    if (fs.pathExistsSync(themePath)) {
+      throw {message : chalk.yellow(themePath) + ' already exists'};
+    }
+
+    await fs.ensureDir(themePath);
+    const assetsPath = await helper.getRootPath(env) + 'assets/';
+
+    const themeLocal = 'src/themes/main/index.js';
+    if (!fs.pathExistsSync(themeLocal)) {
+      fs.copySync(assetsPath + 'files/themes/main/index.js', themePath + '/index.js');
+    } else {
+      fs.copySync(themeLocal, themePath + '/index.js');
+    }
+
+    return themePath;
+  } catch (e) {
+    throw new Error(e.message);
   }
 };
 

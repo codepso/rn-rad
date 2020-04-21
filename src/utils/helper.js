@@ -41,6 +41,10 @@ const readOption = (args, keys, type = 'bool') => {
   return value;
 };
 
+const readArg = (args, depth = 2, type = 'string') => {
+  return ((args['_'].slice(depth))[0]).toLowerCase();
+};
+
 const convertTo = (value, to) => {
   let converted = value;
   switch (to) {
@@ -193,5 +197,6 @@ module.exports = {
   checkResource,
   endLine,
   renderList,
-  readOption
+  readOption,
+  readArg
 };

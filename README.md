@@ -76,6 +76,14 @@ rn-rad i project
 rn-rad i project --resource false
 rn-rad i project -r false
 ```  
+#### command: g theme [name]
+Create a new theme (styles, colors)
+ 
+name: theme name (use kebab case)
+
+```bash
+rn-rad g theme codepso
+```  
 ## Packages
 - React Native 0.6.1+
 - React Navigation 5+
