@@ -73,19 +73,43 @@ const getVersion = async (env) => {
   }
 };
 
-const checkPackage = async (package = '') => {
-  const path = 'package.json';
+const checkPackage = async (pkgs) => {
   try {
-    const pkgJson = await readPackageJson.default(path);
-    if (!_.has(pkgJson['dependencies'], 'react') || !_.has(pkgJson['dependencies'], 'react-native')) {
-      throw {code: 'REACT_NATIVE'};
-    }
-    return !(package !== '' && !_.has(pkgJson['dependencies'], package));
+    const hasVersions = (pkgs instanceof Map);
+    const keys = hasVersions ? Array.from(pkgs.keys()) : pkgs;
+    const pkgJson = await readPackageJson.default('package.json');
+    const r = _.pick(pkgJson['dependencies'], keys);
 
-  } catch (error) {
-    let message = getError(error, path);
-    throw {message};
+    keys.forEach(key => {
+      if (!_.has(r, key)) {
+        throw {message: 'Package ' + chalk.yellow(key) + ' not found'};
+      }
+    });
+
+    if (hasVersions) {
+      keys.forEach(key => {
+        const vA = pkgs.get(key);
+        if (!isHigherVersion(vA, pkgJson['dependencies'][key])) {
+          throw {message: 'Package ' + chalk.yellow(key) + ' must be ' + chalk.yellow(vA) + ' or geather'};
+        }
+      });
+    }
+
+    return true;
+  } catch (e) {
+    throw e;
   }
+};
+
+const isHigherVersion = (a, b) => {
+  const lA = a.split('.'), lB = b.split('.');
+  for (let i = 0; i < lA.length; i ++) {
+    const vA = parseInt(lA[i]), vB = parseInt(lB[i]);
+    if (vA > vB) {
+      return false
+    }
+  }
+  return true;
 };
 
 const checkDirectory = async (dir) => {
