@@ -107,14 +107,14 @@ const component = async (args, type = 'component') => {
   }
 };
 
-const template = async (file, name, path) => {
+const template = async (tmp, name, path) => {
   Handlebars.registerHelper('top:', function (text) {
     return "{{top: 'never'}}"
   });
 
   const content = name.replace('Screen', '');
   const assetsPath = await helper.getRootPath(env) + 'assets/';
-  const source = await helper.readTemplate(assetsPath + 'templates/' + file);
+  const source = await helper.readTemplate(assetsPath + 'templates/' + tmp);
   const template = Handlebars.compile(source);
   const compiled =  template({ name, content });
   const pathFile = helper.getPathFile(path, name);

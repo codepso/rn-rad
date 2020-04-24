@@ -18,8 +18,8 @@ module.exports = Object.freeze({
       default: constants.COMPONENT_PATH
     }
   },
-  SCREEN: [
-    {
+  SCREEN: {
+    name: {
       type : 'input',
       name : 'name',
       message : 'What will be the name',
@@ -27,13 +27,13 @@ module.exports = Object.freeze({
         return helper.validate(input, 'alpha');
       }
     },
-    {
+    path: {
       type : 'input',
       name : 'path',
       message : 'Where will it be saved',
       default: constants.SCREEN_PATH
     }
-  ],
+  },
   REDUX: [
     {
       type : 'confirm',
