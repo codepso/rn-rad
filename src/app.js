@@ -6,6 +6,8 @@ const generate = require('./commands/generate');
 const architecture = require('./commands/architecture');
 const helper = require('./utils/helper');
 const log = console.log;
+const pkgs = new Map([['react-native', '0.61.1'], ['react', '16.9.0']]);
+// const pkgs = ['react-native', 'react'];
 
 const main = (env) => {
 
@@ -23,11 +25,21 @@ const main = (env) => {
     const option = args._[1];
     switch (cmd) {
       case 'i':
-        architecture.main(option);
+        helper.checkPackage(pkgs).then(() => {
+          architecture.main(option);
+        }, (e) => {
+          log(helper.getError(e));
+          helper.endLine();
+        });
         break;
       case 'generate':
       case 'g':
-        generate.main(option);
+        helper.checkPackage(pkgs).then(() => {
+          generate.main(option);
+        }, (e) => {
+          log(helper.getError(e));
+          helper.endLine();
+        });
         break;
       case 'help':
       case 'h':
@@ -46,8 +58,6 @@ const main = (env) => {
         });
         break;
       case 'check':
-        // const pkgs = new Map([['react-native', '0.61.1'], ['react', '16.9.0']]);
-        const pkgs = ['react-native', 'react'];
         helper.checkPackage(pkgs).then(() => {
           log('We\'re ready to work :)');
           helper.endLine();

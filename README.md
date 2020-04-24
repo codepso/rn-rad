@@ -33,9 +33,9 @@ rn-rad i structure [redux=true]
 rn-rad i project [resources=true]
 
 Generators (g)
-rn-rad g component [name] [path=d]
-rn-rad g screen [name] [path=d]
-rn-rad g form [name] [path=d] [screen=true]
+rn-rad g component [name] [path]
+rn-rad g screen [name] [path]
+rn-rad g form [name] [path] [screen=true]
 
 About
 rn-rad help
@@ -44,7 +44,7 @@ rn-rad version
 #### command: i packages [options]
 install the most used [packages](#packages) and pod's (ios)
 
---redux (-r) Flag to indicate if a redux packages are added, default: true
+- --redux (-r) Flag to indicate if a redux packages are added, default: true
 
 ```bash
 rn-rad i packages
@@ -54,7 +54,7 @@ rn-rad i packages -r false
 #### command: i structure [options]
 Create the directory structure
 
---redux (-r) Flag to indicate if a redux directory is added, default: true
+- --redux (-r) Flag to indicate if a redux directory is added, default: true
 
 ```bash
 rn-rad i structure
@@ -69,21 +69,47 @@ rn-rad i structure -r false
 Add theme, styles, images and helpers to RN project, rn-rad.config.js will be created<br/>
 Note: i structure (it's required)
 
---resources (-r) Flag to indicate if a resources are added, default: true
+- --resources (-r) Flag to indicate if a resources are added, default: true
 
 ```bash
 rn-rad i project
 rn-rad i project --resource false
 rn-rad i project -r false
 ```  
+
 #### command: g theme [name]
 Create a new theme (styles, colors)
  
-name: theme name (use kebab case)
+- name: theme name (use kebab case)
 
 ```bash
 rn-rad g theme codepso
 ```  
+
+#### command: g screen [name] [options]
+Create a screen
+
+- name: Screen name (use Upper Camel Case)<br/>
+- --path (-p): Flag to indicate the path where it will be created, default: src/screens
+
+```bash
+rn-rad g screen Welcome
+rn-rad g screen Welcome --path src/screens/home
+rn-rad g screen Welcome -p src/screens/home
+```  
+
+#### command: g component [name] [options]
+Create a component
+
+- name: Component name (use Upper Camel Case)<br/>
+- --path (-p) Flag to indicate the path where it will be created, default: src/components
+
+```bash
+rn-rad g screen Footer
+rn-rad g screen Footer --path src/ui
+rn-rad g screen Footer -p src/ui
+```  
+
 ## Packages
 - React Native 0.6.1+
 - React Navigation 5+

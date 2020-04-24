@@ -41,8 +41,9 @@ const readOption = (args, keys, type = 'bool') => {
   return value;
 };
 
-const readArg = (args, depth = 2, type = 'string') => {
-  return ((args['_'].slice(depth))[0]).toLowerCase();
+const readArg = (args, type = 'ucc') => {
+  const arg = ((args['_'].slice(2))[0]);
+  return _.isNil(arg) ? null : (type !== 'ucc' ? arg.toLowerCase() : arg);
 };
 
 const convertTo = (value, to) => {
@@ -51,7 +52,8 @@ const convertTo = (value, to) => {
     case 'bool':
       converted = (value === true || value === 'true' || value === '1' || value === 1);
       break;
-    case 'int':
+    case 'string':
+      converted = (typeof value !== 'string') ? '' : value;
       break;
   }
 
@@ -112,6 +114,20 @@ const isHigherVersion = (a, b) => {
   return true;
 };
 
+const checkPkgAndFlag = async (pkgs, feature) => {
+  const hasPackage = await checkPackage(pkgs);
+  const hasFeatureActive = await checkFlag(feature);
+  return hasPackage && hasFeatureActive;
+};
+
+const checkFlag = async (feature) => {
+  const config = await readPackageJson.default('rn-rad.json');
+  if (_.has(config, feature)) {
+    return config[feature];
+  }
+  return true;
+};
+
 const checkDirectory = async (dir) => {
   try {
     await accessDir(dir);
@@ -161,7 +177,7 @@ const getRootPath = async (env) => {
   return (env === 'prod') ? globalPath : getLocalPath(env);
 };
 
-const checkCurrentPath = (path) => {
+const currentPath = (path) => {
   return (path === '.') ? '' : path
 };
 
@@ -213,7 +229,7 @@ module.exports = {
   writeTemplate,
   checkPackage,
   validate,
-  checkCurrentPath,
+  currentPath,
   getPathFile,
   checkDirectory,
   getRootPath,
@@ -222,5 +238,6 @@ module.exports = {
   endLine,
   renderList,
   readOption,
-  readArg
+  readArg,
+  checkPkgAndFlag
 };

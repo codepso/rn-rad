@@ -8,6 +8,7 @@ const helper = require('../utils/helper');
 const Handlebars = require("handlebars");
 const questions = require('../config/questions');
 const fs = require('fs-extra');
+const _ = require('lodash');
 
 const log = console.log;
 let env = 'prod';
@@ -29,7 +30,12 @@ const main = (option) => {
       });
       break;
     case 'component':
-      component(args).then(() => {});
+      component(args).then((name) => {
+        log('Component: ' + chalk.yellow(name) + ' has been created');
+      }, (e) => {
+        log(helper.getError(e));
+        helper.endLine();
+      });
       break;
     case 'screen':
       component(args, 'screen').then(() => {});
@@ -42,7 +48,7 @@ const main = (option) => {
 
 const theme = async (args) => {
   try {
-    const themeName = helper.readArg(args);
+    const themeName = helper.readArg(args, 'kc');
     const themePath = 'src/themes/' + themeName;
 
     if (fs.pathExistsSync(themePath)) {
@@ -67,37 +73,37 @@ const theme = async (args) => {
 
 const component = async (args, type = 'component') => {
   try {
-    const isSafeAreaView = await helper.checkPackage('react-native-safe-area-view');
-    let file = 'component.hbs';
-    if (isSafeAreaView) {
-      file = 'component-safe-area.hbs';
+    const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
+    const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
+    let q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
+
+    let path = helper.readOption(args, ['p', 'path'], 'string');
+    if (!_.isNull(path)) {
+      _.unset(q, 'path');
     }
 
-    const temp = args._;
-    const params = temp.slice(2);
-    let name;
-    let path;
-    const q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
-
-    if (params.length === 0) {
-      const answers = await inquirer.prompt(q);
-      name = answers.name;
-      path = helper.checkCurrentPath(answers.path);
-    } else {
-      name = params[0];
-      if (!params[1]) {
-        const answers = await inquirer.prompt(q.pop());
-        path = helper.checkCurrentPath(answers.path);
-      } else {
-        path = helper.checkCurrentPath(params[1]);
-      }
+    let name = helper.readArg(args);
+    if (!_.isNull(name)) {
+      _.unset(q, 'name');
     }
 
+    // Questions
+    const answers = await inquirer.prompt(_.values(q));
+    if (_.has(answers, 'name')) {
+      name = answers['name'];
+    }
+
+    if (_.has(answers, 'path')) {
+      path = answers['path'];
+    }
+
+    path = helper.currentPath(path);
     name = type === 'screen'? name + 'Screen' : name;
+    await template(tmp, name, path);
 
-    await template(file, name, path);
-  } catch (error) {
-    log(helper.getError(error));
+    return name
+  } catch (e) {
+    throw new Error(e);
   }
 };
 

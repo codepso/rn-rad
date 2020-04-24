@@ -115,12 +115,12 @@ const initProject = async (args) => {
     let logs = [];
     const rootPath = await helper.getRootPath(env);
 
-    const pathResource = 'rn-rad.config.js';
+    const pathResource = 'rn-rad.json';
     if (fs.pathExistsSync(pathResource)) {
       throw {message : chalk.yellow(pathResource) + ' already exists'};
     }
 
-    fs.copySync(rootPath + 'assets/files/rn-rad.config.js',  'rn-rad.config.js');
+    fs.copySync(rootPath + 'assets/files/rn-rad.json',  'rn-rad.json');
 
     // With resoruces?
     const option = helper.readOption(args, ['r', 'resources']);
