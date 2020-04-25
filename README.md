@@ -83,6 +83,7 @@ Create a new theme (styles, colors)
 - name: theme name (use kebab case)
 
 ```bash
+rn-rad g theme
 rn-rad g theme codepso
 ```  
 
@@ -93,6 +94,7 @@ Create a screen
 - --path (-p): Flag to indicate the path where it will be created, default: src/screens
 
 ```bash
+rn-rad g screen
 rn-rad g screen Welcome
 rn-rad g screen Welcome --path src/screens/home
 rn-rad g screen Welcome -p src/screens/home
@@ -105,9 +107,10 @@ Create a component
 - --path (-p) Flag to indicate the path where it will be created, default: src/components
 
 ```bash
-rn-rad g screen Footer
-rn-rad g screen Footer --path src/ui
-rn-rad g screen Footer -p src/ui
+rn-rad g component
+rn-rad g component Footer
+rn-rad g component Footer --path src/ui
+rn-rad g component Footer -p src/ui
 ```  
 
 ## Packages

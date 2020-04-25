@@ -48,9 +48,20 @@ const main = (option) => {
 
 const theme = async (args) => {
   try {
-    const themeName = helper.readArg(args, 'kc');
-    const themePath = 'src/themes/' + themeName;
+    let q =  questions.THEME;
 
+    let name = helper.readArg(args, 'kc');
+    if (!_.isNull(name)) {
+      _.unset(q, 'name');
+    }
+
+    // Questions
+    const answers = await inquirer.prompt(_.values(q));
+    if (_.has(answers, 'name')) {
+      name = answers['name'];
+    }
+
+    const themePath = 'src/themes/' + name;
     if (fs.pathExistsSync(themePath)) {
       throw {message : chalk.yellow(themePath) + ' already exists'};
     }
@@ -67,7 +78,7 @@ const theme = async (args) => {
 
     return themePath;
   } catch (e) {
-    throw new Error(e.message);
+    throw new Error(e);
   }
 };
 

@@ -34,6 +34,16 @@ module.exports = Object.freeze({
       default: constants.SCREEN_PATH
     }
   },
+  THEME: {
+    name: {
+      type: 'input',
+      name: 'name',
+      message: 'What will be the name',
+      validate: async (input) => {
+        return helper.validate(input, 'alpha');
+      }
+    }
+  },
   REDUX: [
     {
       type : 'confirm',
