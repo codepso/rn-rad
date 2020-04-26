@@ -38,7 +38,20 @@ const main = (option) => {
       });
       break;
     case 'screen':
-      component(args, 'screen').then(() => {});
+      component(args, 'screen').then((name) => {
+        log('Component: ' + chalk.yellow(name) + ' has been created');
+      }, (e) => {
+        log(helper.getError(e));
+        helper.endLine();
+      });
+      break;
+    case 'form':
+      form(args).then((name) => {
+        log('Form: ' + chalk.yellow(name) + ' has been created');
+      }, (e) => {
+        log(helper.getError(e));
+        helper.endLine();
+      });
       break;
     default:
       print.main();
@@ -111,6 +124,52 @@ const component = async (args, type = 'component') => {
     path = helper.currentPath(path);
     name = type === 'screen'? name + 'Screen' : name;
     await template(tmp, name, path);
+
+    return name
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+const form = async (args) => {
+  try {
+    // const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
+    // const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
+    let q =  questions.FORM;
+
+    let path = helper.readOption(args, ['p', 'path'], 'string');
+    if (!_.isNull(path)) {
+      _.unset(q, 'path');
+    }
+
+    let view = helper.readOption(args, ['v', 'view']);
+    if (!_.isNull(view)) {
+      _.unset(q, 'view');
+    }
+
+    let name = helper.readArg(args);
+    if (!_.isNull(name)) {
+      _.unset(q, 'name');
+    }
+
+    // Questions
+    const answers = await inquirer.prompt(_.values(q));
+    if (_.has(answers, 'name')) {
+      name = answers['name'];
+    }
+
+    if (_.has(answers, 'path')) {
+      path = answers['path'];
+    }
+
+    if (_.has(answers, 'view')) {
+      view = answers['view'];
+    }
+
+    name += 'Form';
+    console.log(name);
+    console.log(path);
+    console.log(view);
 
     return name
   } catch (e) {

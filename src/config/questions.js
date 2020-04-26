@@ -34,6 +34,27 @@ module.exports = Object.freeze({
       default: constants.SCREEN_PATH
     }
   },
+  FORM: {
+    name: {
+      type : 'input',
+      name : 'name',
+      message : 'What will be the name',
+      validate : async (input) => {
+        return helper.validate(input, 'alpha');
+      }
+    },
+    path: {
+      type : 'input',
+      name : 'path',
+      message : 'Where will it be saved',
+      default: constants.FORM_PATH
+    },
+    view: {
+      type : 'confirm',
+      name : 'view',
+      message : 'Do you need a view?',
+    }
+  },
   THEME: {
     name: {
       type: 'input',
