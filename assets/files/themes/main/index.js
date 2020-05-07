@@ -20,7 +20,7 @@ const uiColors = {
   },
   brd: {
     input: '#282c34',
-  }
+  },
 };
 
 export {colors, uiColors};

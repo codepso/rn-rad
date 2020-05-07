@@ -181,7 +181,7 @@ const currentPath = (path) => {
   return (path === '.') ? '' : path
 };
 
-const getPathFile = (path, name) => {
+const getFilePath = (path, name) => {
   return (path !== '') ? path + '/' + name + '.js' : name + '.js';
 };
 
@@ -230,7 +230,7 @@ module.exports = {
   checkPackage,
   validate,
   currentPath,
-  getPathFile,
+  getFilePath,
   checkDirectory,
   getRootPath,
   getVersion,

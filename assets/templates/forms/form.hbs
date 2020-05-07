@@ -1,0 +1,73 @@
+import React, {createRef} from 'react';
+import {Button} from 'react-native-elements';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import {Text, TextInput, View} from 'react-native';
+import {formStyle, appStyle} from '../assets/styles';
+import {AlertUI, BlockUI, MainHelper} from '@codepso/rn-helper';
+
+const {{schemaName}} = Yup.object().shape({
+  name: Yup.string().required('Please enter your name.'),
+});
+
+const alertUI = createRef();
+const blockUI = createRef();
+const sleep = (m) => new Promise((r) => setTimeout(r, m));
+
+const {{className}} = () => {
+  const onSend = async (values) => {
+    blockUI.current.open(true);
+
+    try {
+      console.log(values);
+      await sleep(500);
+      blockUI.current.open(false);
+      alertUI.current.open(
+        'Success',
+        'Data has been sent',
+      );
+    } catch (error) {
+      blockUI.current.open(false);
+      let message = MainHelper.getErrorMessage(error);
+      alertUI.current.open('Snap!', message);
+    }
+  };
+
+  return (
+    <Formik
+      enableReinitialize={true}
+      initialValues={{{name: ''}}}
+      validationSchema={{{schema}}}
+      onSubmit={(values) => onSend(values)}>
+      {(propsForm) => (
+        <>
+          <Text style={[appStyle.txtTitle, appStyle.setCenter]}>{{title}}</Text>
+          <View style={formStyle.form}>
+            <AlertUI ref={alertUI} />
+            <BlockUI ref={blockUI} />
+            <TextInput
+              onChangeText={propsForm.handleChange('name')}
+              onBlur={propsForm.handleBlur('name')}
+              style={formStyle.input}
+              placeholder={'Name'}
+              placeholderTextColor={'white'}
+              value={propsForm.values.name}
+              autoFocus={true}
+            />
+            <Text style={formStyle.error}>
+              {propsForm.touched.name && propsForm.errors.name}
+            </Text>
+            <Button
+              buttonStyle={formStyle.button}
+              titleStyle={formStyle.txtButton}
+              onPress={propsForm.handleSubmit}
+              title="Send"
+            />
+          </View>
+        </>
+      )}
+    </Formik>
+  );
+};
+
+export default {{className}};

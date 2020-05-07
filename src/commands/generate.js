@@ -97,7 +97,7 @@ const theme = async (args) => {
 
 const component = async (args, type = 'component') => {
   try {
-    const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
+    const hasFe0ature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
     const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
     let q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
 
@@ -133,6 +133,8 @@ const component = async (args, type = 'component') => {
 
 const form = async (args) => {
   try {
+    await helper.checkPackage(['@codepso/rn-helper']);
+
     // const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
     // const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
     let q =  questions.FORM;
@@ -166,14 +168,37 @@ const form = async (args) => {
       view = answers['view'];
     }
 
-    name += 'Form';
-    console.log(name);
-    console.log(path);
-    console.log(view);
+    if (view) {
+      let q =  questions.FORM.MAIN;
+    }
+
+    const className = name + 'Form';
+    const schemaName = name + 'Schema';
+    const templatePath = 'templates/forms/form.hbs';
+
+    const filePath = helper.getFilePath(path, className);
+    if (fs.pathExistsSync(filePath)) {
+      throw {message : chalk.yellow(filePath) + ' already exists'};
+    }
+
+    Handlebars.registerHelper('name:', function (text) {
+      return "{{name: ''}}"
+    });
+
+    Handlebars.registerHelper('schema', function (text) {
+      return '{{' + schemaName + '}}';
+    });
+
+    const context = {
+      className,
+      schemaName,
+      title: name + ' Form',
+    };
+    await generateFile(templatePath, filePath, context);
 
     return name
   } catch (e) {
-    throw new Error(e);
+    throw new Error(e.message);
   }
 };
 
@@ -187,8 +212,16 @@ const template = async (tmp, name, path) => {
   const source = await helper.readTemplate(assetsPath + 'templates/' + tmp);
   const template = Handlebars.compile(source);
   const compiled =  template({ name, content });
-  const pathFile = helper.getPathFile(path, name);
+  const pathFile = helper.getFilePath(path, name);
   await helper.writeTemplate(pathFile, compiled);
+};
+
+const generateFile = async (templatePath, filePath, context) => {
+  const assetsPath = await helper.getRootPath(env) + 'assets/';
+  const source = await helper.readTemplate(assetsPath + templatePath);
+  const template = Handlebars.compile(source);
+  const compiled =  template(context);
+  await helper.writeTemplate(filePath, compiled);
 };
 
 module.exports = {
