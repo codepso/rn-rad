@@ -11,10 +11,15 @@ You need the following requirements:
  - Node 8+
  - NPM
  - React Native CLI
+ - Jest
 ## Installation
 ```bash
 npm install -g @codepso/rn-rad
 npm update -g @codepso/rn-rad
+```
+## Test
+```bash
+yarn test
 ```
 ## Architecture
 - React Native 0.6.1+

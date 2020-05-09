@@ -52,6 +52,7 @@ const readArg = (args, type = 'ucc') => {
  * @param {string} type - Schematic type (component, form, etc.).
  */
 const getSchematicName = (name, type) => {
+  name = name.charAt(0).toUpperCase() + name.slice(1);
   let suffix = '';
   switch (type) {
     case 'screen':
@@ -258,5 +259,6 @@ module.exports = {
   renderList,
   readOption,
   readArg,
-  checkPkgAndFlag
+  checkPkgAndFlag,
+  getSchematicName
 };
