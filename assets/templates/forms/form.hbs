@@ -14,7 +14,7 @@ const alertUI = createRef();
 const blockUI = createRef();
 const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
-const {{className}} = () => {
+const {{formName}} = () => {
   const onSend = async (values) => {
     blockUI.current.open(true);
 
@@ -70,4 +70,4 @@ const {{className}} = () => {
   );
 };
 
-export default {{className}};
+export default {{formName}};

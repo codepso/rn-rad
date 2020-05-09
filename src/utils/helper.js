@@ -42,8 +42,27 @@ const readOption = (args, keys, type = 'bool') => {
 };
 
 const readArg = (args, type = 'ucc') => {
-  const arg = ((args['_'].slice(2))[0]);
+  const arg = _.isEmpty(args) ? null : ((args['_'].slice(2))[0]);
   return _.isNil(arg) ? null : (type !== 'ucc' ? arg.toLowerCase() : arg);
+};
+
+/**
+ * Get schematic names.
+ * @param {string} name - Schematic name.
+ * @param {string} type - Schematic type (component, form, etc.).
+ */
+const getSchematicName = (name, type) => {
+  let suffix = '';
+  switch (type) {
+    case 'screen':
+      suffix = 'Screen';
+      break;
+    case 'form':
+      suffix = 'Form';
+      break;
+  }
+
+  return name.includes(suffix) ? name : name + suffix;
 };
 
 const convertTo = (value, to) => {

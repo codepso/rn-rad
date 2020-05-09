@@ -95,11 +95,13 @@ const theme = async (args) => {
   }
 };
 
-const component = async (args, type = 'component') => {
+const component = async (args, type = 'component', options = {}) => {
   try {
-    const hasFe0ature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
-    const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
+    const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
+    const template = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
+
     let q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
+    q = _.has(options, 'questions') ? options.questions : q;
 
     let path = helper.readOption(args, ['p', 'path'], 'string');
     if (!_.isNull(path)) {
@@ -122,11 +124,30 @@ const component = async (args, type = 'component') => {
     }
 
     path = helper.currentPath(path);
-    name = type === 'screen'? name + 'Screen' : name;
-    await template(tmp, name, path);
+    const suffix = type === 'screen' ? 'Screen' : '';
+    const templatePath = 'templates/' + template;
+    const componentName = name + '' + suffix;
 
-    return name
+    const filePath = helper.getFilePath(path, componentName);
+    if (fs.pathExistsSync(filePath)) {
+      throw {message : chalk.yellow(filePath) + ' already exists'};
+    }
+
+    // Create template
+    Handlebars.registerHelper('top:', function (text) {
+      return "{{top: 'never'}}"
+    });
+
+    const context = {
+      componentName,
+      content: name
+    };
+    await generateFile(templatePath, filePath, context);
+
+    // Return name
+    return componentName;
   } catch (e) {
+    console.log(e);
     throw new Error(e);
   }
 };
@@ -134,9 +155,6 @@ const component = async (args, type = 'component') => {
 const form = async (args) => {
   try {
     await helper.checkPackage(['@codepso/rn-helper']);
-
-    // const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
-    // const tmp = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
     let q =  questions.FORM;
 
     let path = helper.readOption(args, ['p', 'path'], 'string');
@@ -168,19 +186,17 @@ const form = async (args) => {
       view = answers['view'];
     }
 
-    if (view) {
-      let q =  questions.FORM.MAIN;
-    }
-
-    const className = name + 'Form';
+    path = helper.currentPath(path);
+    const formName = name + 'Form';
     const schemaName = name + 'Schema';
     const templatePath = 'templates/forms/form.hbs';
 
-    const filePath = helper.getFilePath(path, className);
+    const filePath = helper.getFilePath(path, formName);
     if (fs.pathExistsSync(filePath)) {
       throw {message : chalk.yellow(filePath) + ' already exists'};
     }
 
+    // Create template
     Handlebars.registerHelper('name:', function (text) {
       return "{{name: ''}}"
     });
@@ -190,30 +206,40 @@ const form = async (args) => {
     });
 
     const context = {
-      className,
+      formName,
       schemaName,
       title: name + ' Form',
     };
-    await generateFile(templatePath, filePath, context);
+    // await generateFile(templatePath, filePath, context);
 
-    return name
+    if (view) {
+      const options = prepareView(name, 'form');
+      await component([], 'screen', options);
+    }
+
+    // Return name
+    return formName;
   } catch (e) {
+    console.log(e);
     throw new Error(e.message);
   }
 };
 
-const template = async (tmp, name, path) => {
-  Handlebars.registerHelper('top:', function (text) {
-    return "{{top: 'never'}}"
-  });
+const prepareView = (name, from = 'form') => {
+  let qMain = questions.SCREEN;
+  delete qMain.name.validate;
+  const qUpdates = {
+    name: {
+      message: 'What will be the name (view)',
+      default: name + 'Screen'
+    },
+    path: {
+      message: 'Where will it be saved (view)',
+    }
+  }
 
-  const content = name.replace('Screen', '');
-  const assetsPath = await helper.getRootPath(env) + 'assets/';
-  const source = await helper.readTemplate(assetsPath + 'templates/' + tmp);
-  const template = Handlebars.compile(source);
-  const compiled =  template({ name, content });
-  const pathFile = helper.getFilePath(path, name);
-  await helper.writeTemplate(pathFile, compiled);
+  const qView = _.merge(qMain, qUpdates);
+  return { questions: qView }
 };
 
 const generateFile = async (templatePath, filePath, context) => {
@@ -227,5 +253,5 @@ const generateFile = async (templatePath, filePath, context) => {
 module.exports = {
   main,
   setEnv,
-  template
+  generateFile
 };

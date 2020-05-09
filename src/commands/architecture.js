@@ -208,7 +208,7 @@ const initAuth = async () => {
 
     for (let screen of screens) {
       const name = screen + 'Screen';
-      await generate.template(file, name, base);
+      await generate.generateFile(file, name, base);
     }
 
     return base;

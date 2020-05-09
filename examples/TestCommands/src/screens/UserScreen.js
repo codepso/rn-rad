@@ -2,14 +2,14 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 
-const {{componentName}} = () => {
+const UserScreen = () => {
   return (
-    <SafeAreaView forceInset={{{top: 'never'}}}>
+    <SafeAreaView forceInset={{top: 'never'}}>
       <View>
-        <Text>{{content}}</Text>
+        <Text>User</Text>
       </View>
     </SafeAreaView>
   );
 };
 
-export default {{componentName}};
+export default UserScreen;
