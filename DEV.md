@@ -2,24 +2,23 @@
 CLI for Rapid Application Development using React Native.
 ## Table of content
 - [Requirements](#requirements)
-- [Installation](#installation)
-- [Commands](#commands)
-- [License](#license)
+- [Testing Framework](#testing-framework)
+- [Testing Commands](#testing-commands)
 - [Links](#links)
 ## Requirements
 You need the following requirements:
- - Node 8+
+ - Node 10+
  - NPM
  - React Native CLI
  - Jest
-## Installation
-```bash
-npm install -g @codepso/rn-rad
-npm update -g @codepso/rn-rad
-```
-## Test
+## Testing Framework
 ```bash
 yarn test
+```
+## Testing Commands
+```bash
+cd examples/TestCommands
+node test.js g form User
 ```
 ## Architecture
 - React Native 0.6.1+
@@ -29,8 +28,6 @@ yarn test
 - Redux
 - Yup
 - Formik 
-## License
-The React Init is licensed under the terms of the GPL Open Source license and is available for free.
 
 ## Links
 - https://reactnative.dev

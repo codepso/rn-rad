@@ -47,12 +47,12 @@ const readArg = (args, type = 'ucc') => {
 };
 
 /**
- * Get schematic names.
+ * Clear schematic name.
  * @param {string} name - Schematic name.
  * @param {string} type - Schematic type (component, form, etc.).
+ * @returns {string}
  */
-const getSchematicName = (name, type) => {
-  name = name.charAt(0).toUpperCase() + name.slice(1);
+const clearSchematicName = (name, type) => {
   let suffix = '';
   switch (type) {
     case 'screen':
@@ -61,9 +61,16 @@ const getSchematicName = (name, type) => {
     case 'form':
       suffix = 'Form';
       break;
+    case 'schema':
+      suffix = 'Schema';
+      break;
   }
 
-  return name.includes(suffix) ? name : name + suffix;
+  const index = name.toLowerCase().indexOf(suffix.toLowerCase());
+  if (index > 0) {
+    name = name.slice(0, index);
+  }
+  return name.charAt(0).toUpperCase() + name.slice(1);
 };
 
 const convertTo = (value, to) => {
@@ -260,5 +267,5 @@ module.exports = {
   readOption,
   readArg,
   checkPkgAndFlag,
-  getSchematicName
+  clearSchematicName
 };

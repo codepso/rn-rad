@@ -80,9 +80,3 @@ typings/
 
 .idea
 .DS_Store
-
-# Test
-test/src
-test/yarn.lock
-test/node_modules/
-test/rn-rad.config.js

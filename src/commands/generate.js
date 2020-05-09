@@ -99,6 +99,7 @@ const component = async (args, type = 'component', options = {}) => {
   try {
     const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
     const template = hasFeature ? 'component-safe-area.hbs' : 'component.hbs';
+    const templatePath = _.has(options, 'template') ? options.template : 'templates/' + template;
 
     let q =  (type === 'component') ? questions.COMPONENT: questions.SCREEN;
     q = _.has(options, 'questions') ? options.questions : q;
@@ -124,8 +125,8 @@ const component = async (args, type = 'component', options = {}) => {
     }
 
     path = helper.currentPath(path);
+    name = helper.clearSchematicName(name, 'screen');
     const suffix = type === 'screen' ? 'Screen' : '';
-    const templatePath = 'templates/' + template;
     const componentName = name + '' + suffix;
 
     const filePath = helper.getFilePath(path, componentName);
@@ -187,6 +188,7 @@ const form = async (args) => {
     }
 
     path = helper.currentPath(path);
+    name = helper.clearSchematicName(name, 'form');
     const formName = name + 'Form';
     const schemaName = name + 'Schema';
     const templatePath = 'templates/forms/form.hbs';
@@ -213,7 +215,7 @@ const form = async (args) => {
     // await generateFile(templatePath, filePath, context);
 
     if (view) {
-      const options = prepareView(name, 'form');
+      const options = prepareOptions(name, 'form');
       await component([], 'screen', options);
     }
 
@@ -225,7 +227,13 @@ const form = async (args) => {
   }
 };
 
-const prepareView = (name, from = 'form') => {
+/**
+ * Prepare options.
+ * @param {string} name - Schematic name.
+ * @param {string} from - Prepare option from schematic.
+ * @returns {Object}
+ */
+const prepareOptions = (name, from = '') => {
   let qMain = questions.SCREEN;
   delete qMain.name.validate;
   const qUpdates = {
@@ -238,12 +246,13 @@ const prepareView = (name, from = 'form') => {
     }
   }
 
+  const template = 'templates/forms/view.hbs';
   const qView = _.merge(qMain, qUpdates);
-  return { questions: qView }
+  return { questions: qView, template };
 };
 
 const generateFile = async (templatePath, filePath, context) => {
-  const assetsPath = await helper.getRootPath(env) + 'assets/';
+  const assetsPath = await helper.getRootPath(env) + 'src/assets/';
   const source = await helper.readTemplate(assetsPath + templatePath);
   const template = Handlebars.compile(source);
   const compiled =  template(context);

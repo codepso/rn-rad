@@ -3,9 +3,9 @@ import {View} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import {appStyle, formStyle} from '../assets/styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import TestForm from '../forms/TestForm';
+import {{schemaFormName}} from '../forms/{{schemaFormName}}';
 
-const TestScreen = ({navigation}) => {
+const {{schemaName}} = ({navigation}) => {
 return (
 <SafeAreaView style={appStyle.panSafeArea}>
   <KeyboardAwareScrollView
@@ -13,7 +13,7 @@ return (
     keyboardShouldPersistTaps="handled">
     <View style={appStyle.panMain}>
       <View style={[formStyle.container, appStyle.panLogin]}>
-        <TestForm navigation={navigation} />
+        <{{schemaFormName}} navigation={navigation} />
       </View>
     </View>
   </KeyboardAwareScrollView>
@@ -21,4 +21,4 @@ return (
 );
 };
 
-export default TestScreen;
+export default {{schemaName}};

@@ -1,0 +1,5 @@
+# Test
+src/
+yarn.lock
+node_modules/
+rn-rad.json
