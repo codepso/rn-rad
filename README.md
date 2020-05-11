@@ -6,7 +6,7 @@ CLI for Rapid Application Development using React Native.
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 <h1 align="center">
-  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-h-5.jpg" alt="Codepso" width="900">
+  <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-h-1.jpg" alt="Codepso" width="900">
 </h1>
 
 ## Table of content
