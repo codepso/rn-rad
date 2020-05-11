@@ -1,5 +1,5 @@
 # rn-rad
-CLI for React Native, boilerplates and generators. Rapid Application Development (RAD) model for React Native
+CLI for React Native, boilerplates and generators. Rapid Application Development (RAD) model for React Native.
 
 [![npm Package](https://img.shields.io/npm/v/@codepso/rn-rad)](https://www.npmjs.org/package/@codepso/rn-rad)
 [![downloads per month](http://img.shields.io/npm/dm/@codepso/rn-rad.svg)](https://www.npmjs.org/package/@codepso/rn-rad)

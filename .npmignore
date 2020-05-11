@@ -2,5 +2,6 @@ npm-debug.log
 yarn-error.log
 node_modules
 examples
+__tests__
 .DS_Store
 .idea

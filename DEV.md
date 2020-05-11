@@ -1,5 +1,5 @@
 # Development Guide
-CLI for Rapid Application Development using React Native.
+CLI for React Native, boilerplates and generators. Rapid Application Development (RAD) model for React Native.
 ## Table of content
 - [Requirements](#requirements)
 - [Testing Framework](#testing-framework)
