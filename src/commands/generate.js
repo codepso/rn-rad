@@ -21,8 +21,8 @@ const main = (option) => {
   // Choice option
   switch (option) {
     case 'theme':
-      theme(args).then((name) => {
-        log('Theme: ' + chalk.yellow(name) + ' has been created');
+      theme(args).then((r) => {
+        helper.render(r);
         helper.endLine();
       }, (e) => {
         log(helper.getError(e.message));
@@ -30,24 +30,24 @@ const main = (option) => {
       });
       break;
     case 'component':
-      component(args).then((name) => {
-        log('Component: ' + chalk.yellow(name) + ' has been created');
+      component(args).then((r) => {
+        helper.render(r);
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
       });
       break;
     case 'screen':
-      component(args, 'screen').then((name) => {
-        log('Component: ' + chalk.yellow(name) + ' has been created');
+      component(args, 'screen').then((r) => {
+        helper.render(r);
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
       });
       break;
     case 'form':
-      form(args).then((name) => {
-        log('Form: ' + chalk.yellow(name) + ' has been created');
+      form(args).then((r) => {
+        helper.render(r);
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
@@ -59,6 +59,11 @@ const main = (option) => {
   }
 };
 
+/**
+ * Generate Theme
+ * @param {string[]} args - Input args
+ * @returns {string}
+ */
 const theme = async (args) => {
   try {
     let q =  questions.THEME;
@@ -89,12 +94,22 @@ const theme = async (args) => {
       fs.copySync(themeLocal, themePath + '/index.js');
     }
 
-    return themePath;
+    return 'Theme: ' + chalk.yellow(name) + ' has been created';
   } catch (e) {
     throw new Error(e);
   }
 };
 
+/**
+ * Generate Component
+ * @param {string[]} args - Input
+ * @param {string} type - Type: component, screen
+ * @param {Object} options - Options to generate the component.
+ * @param {string} options.questions - Questions list.
+ * @param {string} options.template - Template file.
+ * @param {string} options.context - Template context.
+ * @returns {string}
+ */
 const component = async (args, type = 'component', options = {}) => {
   try {
     const hasFeature = await helper.checkPkgAndFlag(['react-native-safe-area-view'], 'safeAreaView');
@@ -139,20 +154,29 @@ const component = async (args, type = 'component', options = {}) => {
       return "{{top: 'never'}}"
     });
 
-    const context = {
+    let context = {
       componentName,
       content: name
     };
+
+    if (_.has(options, 'context')) {
+      context = _.merge(context, options.context);
+    }
+
     await generateFile(templatePath, filePath, context);
 
-    // Return name
-    return componentName;
+    // Response
+    return chalk.yellow(componentName) + ' has been created';
   } catch (e) {
-    console.log(e);
     throw new Error(e);
   }
 };
 
+/**
+ * Generate Form
+ * @param {string[]} args - Input args
+ * @returns {string[]}
+ */
 const form = async (args) => {
   try {
     await helper.checkPackage(['@codepso/rn-helper']);
@@ -207,22 +231,24 @@ const form = async (args) => {
       return '{{' + schemaName + '}}';
     });
 
+    let r = [];
     const context = {
       formName,
       schemaName,
       title: name + ' Form',
     };
-    // await generateFile(templatePath, filePath, context);
+    await generateFile(templatePath, filePath, context);
+    r.push(chalk.yellow(formName) + ' has been created');
 
     if (view) {
       const options = prepareOptions(name, 'form');
-      await component([], 'screen', options);
+      let t = await component([], 'screen', options);
+      r = helper.mergeResults(r, t);
     }
 
     // Return name
-    return formName;
+    return r;
   } catch (e) {
-    console.log(e);
     throw new Error(e.message);
   }
 };
@@ -247,8 +273,13 @@ const prepareOptions = (name, from = '') => {
   }
 
   const template = 'templates/forms/view.hbs';
+
+  const context = {
+    formName: name + 'Form'
+  }
+
   const qView = _.merge(qMain, qUpdates);
-  return { questions: qView, template };
+  return { questions: qView, template, context };
 };
 
 const generateFile = async (templatePath, filePath, context) => {

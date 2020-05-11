@@ -231,8 +231,6 @@ const getLocalPath = (env) => {
   switch (env) {
     case 'dev':
     case 'test':
-      local = '../';
-      break;
     case 'stage':
       local = '../../';
       break;
@@ -240,12 +238,42 @@ const getLocalPath = (env) => {
   return local;
 };
 
-const renderList = (logs) => {
-  if (logs.length > 0) {
-    logs.forEach(element => console.log('- ' + element));
+/**
+ * Render.
+ * @param {(string|string[])} result - Lists or string.
+ * @param {string} as - Type: plain, list, etc.
+ * @returns {string}
+ */
+const render = (result, as = 'list') => {
+  const prefix = as === 'list' ? '- ' : '';
+  if (_.isArray(result) && result.length > 0) {
+    result.forEach(element => console.log(prefix + element));
+  }
+
+  if (!_.isArray(result)) {
+    console.log(prefix + result);
   }
 };
 
+/**
+ * Merge Results
+ * @param {string[]} results - Result lists.
+ * @param {(string|string[])} result - Result.
+ * @returns {string[]}
+ */
+const mergeResults = (results, result) => {
+  if (_.isString(result)) {
+    results.push(result);
+  } else {
+    results = _.union(results, result);
+  }
+
+  return results
+}
+
+/**
+ * Render endline
+ */
 const endLine = () => {
   console.log('');
 };
@@ -263,9 +291,10 @@ module.exports = {
   getVersion,
   checkResource,
   endLine,
-  renderList,
+  render,
   readOption,
   readArg,
   checkPkgAndFlag,
-  clearSchematicName
+  clearSchematicName,
+  mergeResults
 };

@@ -1,6 +1,6 @@
 {
   "name": "@codepso/rn-rad",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Rapid application development for React Native",
   "main": "index.js",
   "scripts": {

@@ -47,7 +47,7 @@ const help = () => {
   log(chalk.yellow(' - g component [name] [path]'));
   log(chalk.yellow(' - g screen [name] [path]'));
   log(chalk.yellow(' - g theme [name]'));
-  log(chalk.yellow(' - g form [name]' + chalk.white(' (working on it)')));
+  log(chalk.yellow(' - g form [name]'));
   // log(chalk.yellow('- help (h)') +  chalk.white(' Lists available commands and their short descriptions.'));
   log(chalk.yellow('About'));
   log(chalk.yellow(' - who (w)') +  chalk.white(' authors'));

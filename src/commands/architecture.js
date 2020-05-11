@@ -42,7 +42,7 @@ const main = (option) => {
     case 'project':
       initProject(args).then((logs) => {
         log('The project has been ' + chalk.yellow('initialized'));
-        helper.renderList(logs);
+        helper.render(logs);
         helper.endLine();
       }, (e) => {
         log(helper.getError(e.message));
@@ -69,7 +69,6 @@ const initStructure = async (args) => {
     const option = helper.readOption(args, ['r', 'redux']);
     let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
 
-    const assetsPath = await helper.getRootPath(env) + 'assets/';
     let paths = await Promise.all([
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
@@ -98,6 +97,7 @@ const initStructure = async (args) => {
     paths = paths.concat(reduxPaths);
 
     // Added .gitkeep
+    const assetsPath = await helper.getRootPath(env) + 'src/assets/';
     for (let path of paths) {
       fs.copySync(assetsPath + 'files/gitkeep', path + '/.gitkeep');
     }
@@ -113,7 +113,7 @@ const initStructure = async (args) => {
 const initProject = async (args) => {
   try {
     let logs = [];
-    const rootPath = await helper.getRootPath(env);
+    const rootPath = await helper.getRootPath(env) + 'src/';
 
     const pathResource = 'rn-rad.json';
     if (fs.pathExistsSync(pathResource)) {
