@@ -114,7 +114,7 @@ rn-rad g component Footer -p src/ui
 ```  
 
 #### command: g form [name] [options]
-Create a component
+Create a Form
 
 - name: Form name (use UpperCamelCase)<br/>
 - --path (-p) Flag to indicate the path where it will be created, default: src/forms
