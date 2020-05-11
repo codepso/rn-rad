@@ -7,10 +7,10 @@ CLI for Rapid Application Development using React Native.
 - [Links](#links)
 ## Requirements
 You need the following requirements:
- - Node 10+
- - NPM
- - React Native CLI
- - Jest
+ - node 10+
+ - npm & npx
+ - react native cli
+ - jest
 ## Testing Framework
 ```bash
 yarn test
@@ -20,15 +20,6 @@ yarn test
 cd examples/TestCommands
 node test.js g form User
 ```
-## Architecture
-- React Native 0.6.1+
-- React Navigation 5+
-- React Native Elements 1.2.0+
-- Vector Icons 6
-- Redux
-- Yup
-- Formik 
-
 ## Links
 - https://reactnative.dev
 - https://react-native-elements.github.io/react-native-elements
