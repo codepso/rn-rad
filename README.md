@@ -136,7 +136,7 @@ rn-rad g form User -p src/forms/user -v false
 ## Packages
 - React Native 0.6.1+
 - React Navigation 5+
-- React Native Elements 1.2.0+
+- React Native Paper 3.10+
 - Vector Icons 6
 - Redux
 - Yup
