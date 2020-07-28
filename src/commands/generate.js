@@ -32,6 +32,7 @@ const main = (option) => {
     case 'component':
       component(args).then((r) => {
         helper.render(r);
+        helper.endLine();
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
@@ -40,6 +41,7 @@ const main = (option) => {
     case 'screen':
       component(args, 'screen').then((r) => {
         helper.render(r);
+        helper.endLine();
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
@@ -48,6 +50,7 @@ const main = (option) => {
     case 'form':
       form(args).then((r) => {
         helper.render(r);
+        helper.endLine();
       }, (e) => {
         log(helper.getError(e));
         helper.endLine();
@@ -215,7 +218,7 @@ const form = async (args) => {
     name = helper.clearSchematicName(name, 'form');
     const formName = name + 'Form';
     const schemaName = name + 'Schema';
-    const templatePath = 'templates/forms/form.hbs';
+    const templatePath = 'templates/forms/basic/form.hbs';
 
     const filePath = helper.getFilePath(path, formName);
     if (fs.pathExistsSync(filePath)) {
@@ -230,6 +233,14 @@ const form = async (args) => {
     Handlebars.registerHelper('schema', function (text) {
       return '{{' + schemaName + '}}';
     });
+
+    Handlebars.registerHelper('flex:', function (text) {
+      return '{{flex: 1}}';
+    });
+
+    /*Handlebars.registerHelper('top', function (text) {
+      return "{{top: ''}}"
+    });*/
 
     let r = [];
     const context = {
@@ -272,7 +283,7 @@ const prepareOptions = (name, from = '') => {
     }
   }
 
-  const template = 'templates/forms/view.hbs';
+  const template = 'templates/forms/basic/view.hbs';
 
   const context = {
     formName: name + 'Form'

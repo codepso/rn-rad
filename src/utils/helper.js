@@ -148,11 +148,15 @@ const checkPkgAndFlag = async (pkgs, feature) => {
 };
 
 const checkFlag = async (feature) => {
-  const config = await readPackageJson.default('rn-rad.json');
-  if (_.has(config, feature)) {
-    return config[feature];
+  try {
+    const config = await readPackageJson.default('rn-rad.json');
+    if (_.has(config, feature)) {
+      return config[feature];
+    }
+    return false;
+  } catch (e) {
+    return false;
   }
-  return true;
 };
 
 const checkDirectory = async (dir) => {

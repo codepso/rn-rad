@@ -70,6 +70,8 @@ const initStructure = async (args) => {
     let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
 
     let paths = await Promise.all([
+      makeDir(base + 'app/context'),
+      makeDir(base + 'app/reducers'),
       makeDir(base + 'services'),
       makeDir(base + 'forms'),
       makeDir(base + 'environments'),
@@ -124,7 +126,8 @@ const initProject = async (args) => {
 
     // With resoruces?
     const option = helper.readOption(args, ['r', 'resources']);
-    let withResources = (option === null) ? (await inquirer.prompt(questions.PROJECT)).resources : option;
+    // let withResources = (option === null) ? (await inquirer.prompt(questions.PROJECT)).resources : option;
+    let withResources = false;
 
     if (withResources) {
       // Theme

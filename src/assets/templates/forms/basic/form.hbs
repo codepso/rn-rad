@@ -1,0 +1,56 @@
+import React from 'react';
+import {Text, TextInput, View, Button} from 'react-native';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+
+const {{formName}} = () => {
+
+  const {{schemaName}} = Yup.object().shape({
+    name: Yup.string().required('Please enter your name.'),
+  });
+
+  // Only Test
+  const sleep = (m) => new Promise((r) => setTimeout(r, m));
+
+  const onSend = async (values) => {
+    try {
+      console.log(values);
+      await sleep(500);
+      console.log('Its OK.');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return (
+    <Formik
+      enableReinitialize={true}
+      initialValues={{{name: ''}}}
+      validationSchema={{{schema}}}
+      onSubmit={(values) => onSend(values)}>
+      {(propsForm) => (
+        <>
+          <View>
+            <Text>{{title}}</Text>
+            <TextInput
+              onChangeText={propsForm.handleChange('name')}
+              onBlur={propsForm.handleBlur('name')}
+              placeholder={'Name'}
+              value={propsForm.values.name}
+              autoFocus={true}
+            />
+            <Text>
+              {propsForm.touched.name && propsForm.errors.name}
+            </Text>
+            <Button
+              onPress={propsForm.handleSubmit}
+              title="Send"
+            />
+          </View>
+        </>
+      )}
+    </Formik>
+  );
+};
+
+export default {{formName}};
