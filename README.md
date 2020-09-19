@@ -43,25 +43,25 @@ rn-rad version
 #### command: i packages [options]
 install the most used [packages](#packages) and pod's (ios)
 
-- --redux (-r) Flag to indicate if a redux packages are added, default: true
+- --redux (-r) Flag to indicate if a redux packages will be added, default: true
+- --lang (-l) Flag to indicate if languages packages will be added, default: true
 
 ```bash
 rn-rad i packages
 rn-rad i packages --redux false
 rn-rad i packages -r false
+rn-rad i structure --lang false
+rn-rad i structure -l false
 ```
 #### command: i structure [options]
 Create the directory structure
 
 - --redux (-r) Flag to indicate if a redux directory will be added, default: true
-- --lang (-l) Flag to indicate if languages libraries will be added, default: true
 
 ```bash
 rn-rad i structure
 rn-rad i structure --redux false
 rn-rad i structure -r false
-rn-rad i structure --lang false
-rn-rad i structure -l false
 ```
 <h1>
   <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-3.jpg" alt="Codepso">
@@ -139,10 +139,12 @@ rn-rad g form User -p src/forms/user -v false
 ## Packages
 - React Native 0.6.1+
 - React Navigation 5+
-- React Native Paper 3.10+
+- React Native Paper 3.10+/4
 - Vector Icons 6
 - Redux
 - Yup
-- Formik 
+- Formik
+- React Native Localize
+- i18n js
 ## License
 The React RAD is licensed under the terms of the GPL Open Source license and is available for free.
