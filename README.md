@@ -19,7 +19,6 @@ CLI for React Native, boilerplates and generators. Rapid Application Development
 You need the following requirements:
  - node 10+
  - npm & npx
- - react native cli
 ## Installation
 ```bash
 npm install -g @codepso/rn-rad
