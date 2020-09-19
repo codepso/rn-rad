@@ -224,11 +224,19 @@ const installPackages = async (args) => {
   try {
 
     // With redux?
-    const option = helper.readOption(args, ['r', 'redux']);
-    let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
+    const optionR = helper.readOption(args, ['r', 'redux']);
+    let withRedux = (optionR === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : optionR;
 
     if (withRedux) {
       dependencies = dependencies.concat(packages.REDUX);
+    }
+
+    // With lang?
+    const optionL = helper.readOption(args, ['l', 'lang']);
+    let withLang = (optionL === null) ? (await inquirer.prompt(questions.LANG))['lang'] : optionL;
+
+    if (withLang) {
+      dependencies = dependencies.concat(packages.LANG);
     }
 
     // checking 'react-native-safe-area-view',

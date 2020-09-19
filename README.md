@@ -54,11 +54,14 @@ rn-rad i packages -r false
 Create the directory structure
 
 - --redux (-r) Flag to indicate if a redux directory will be added, default: true
+- --lang (-l) Flag to indicate if languages libraries will be added, default: true
 
 ```bash
 rn-rad i structure
 rn-rad i structure --redux false
 rn-rad i structure -r false
+rn-rad i structure --lang false
+rn-rad i structure -l false
 ```
 <h1>
   <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-3.jpg" alt="Codepso">

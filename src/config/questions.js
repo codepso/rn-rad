@@ -69,7 +69,7 @@ module.exports = Object.freeze({
     {
       type : 'confirm',
       name : 'redux',
-      message : 'Will you use Redux'
+      message : 'Will you use Redux?'
     }
   ],
   PROJECT: [
@@ -78,5 +78,12 @@ module.exports = Object.freeze({
       name : 'resources',
       message : 'Initialize with resources (themes, styles, etc.)'
     }
-  ]
+  ],
+  LANG: [
+    {
+      type : 'confirm',
+      name : 'lang',
+      message : 'Will you use i18n?'
+    }
+  ],
 });
