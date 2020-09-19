@@ -5,6 +5,7 @@ module.exports = Object.freeze({
     'react-native-gesture-handler',
     'react-native-screens',
     'react-native-safe-area-context',
+    'react-native-safe-area-view',
     '@react-native-community/masked-view',
     'react-native-paper',
     '@react-navigation/stack',
