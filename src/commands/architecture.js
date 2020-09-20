@@ -66,8 +66,12 @@ const initStructure = async (args) => {
     }
 
     // With redux?
-    const option = helper.readOption(args, ['r', 'redux']);
-    let withRedux = (option === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option;
+    const option1 = helper.readOption(args, ['r', 'redux']);
+    let withRedux = (option1 === null) ? (await inquirer.prompt(questions.REDUX))['redux'] : option1;
+
+    // With lang?
+    const option2 = helper.readOption(args, ['l', 'lang']);
+    let withLang = (option2 === null) ? (await inquirer.prompt(questions.LANG))['lang'] : option2;
 
     let paths = await Promise.all([
       makeDir(base + 'app/context'),
@@ -97,6 +101,15 @@ const initStructure = async (args) => {
       ]);
     }
     paths = paths.concat(reduxPaths);
+
+    let langPaths = [];
+    if (withLang) {
+      langPaths = await Promise.all([
+        makeDir(base + 'i18n'),
+        makeDir(base + 'i18n/langs'),
+      ]);
+    }
+    paths = paths.concat(langPaths);
 
     // Added .gitkeep
     const assetsPath = await helper.getRootPath(env) + 'src/assets/';
