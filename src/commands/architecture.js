@@ -78,7 +78,7 @@ const initStructure = async (args) => {
       makeDir(base + 'components'),
       makeDir(base + 'screens'),
       makeDir(base + 'models'),
-      makeDir(base + 'navigation'),
+      makeDir(base + 'navigator'),
       makeDir(base + 'helpers'),
       makeDir(base + 'themes'),
       makeDir(base + 'assets/styles'),
@@ -119,55 +119,63 @@ const initProject = async (args) => {
 
     const pathResource = 'rn-rad.json';
     if (fs.pathExistsSync(pathResource)) {
-      throw {message : chalk.yellow(pathResource) + ' already exists'};
+      // throw {message : chalk.yellow(pathResource) + ' already exists'};
+      logs.push(chalk.yellow(pathResource) + ' already exists');
+    } else {
+      fs.copySync(rootPath + 'assets/files/rn-rad.json',  'rn-rad.json');
     }
-
-    fs.copySync(rootPath + 'assets/files/rn-rad.json',  'rn-rad.json');
 
     // With resoruces?
     const option = helper.readOption(args, ['r', 'resources']);
-    // let withResources = (option === null) ? (await inquirer.prompt(questions.PROJECT)).resources : option;
-    let withResources = false;
+    let withResources = (option === null) ? (await inquirer.prompt(questions.PROJECT)).resources : option;
 
     if (withResources) {
+      let tempLogs = [];
+
       // Theme
-      const pathTheme = 'src/themes/main';
-      if (!fs.pathExistsSync(pathTheme)) {
-        fs.copySync(rootPath + 'assets/files/themes/main',  pathTheme);
-      } else {
-        logs.push(chalk.yellow(pathTheme) + ' hasn\'t been copied because it exists');
-      }
+      const theme = require('./architecture/init/theme');
+      tempLogs = await theme.init(rootPath);
+      logs = logs.concat(tempLogs);
 
-      const indexTheme = 'src/themes/index.js';
-      if (!fs.pathExistsSync(indexTheme)) {
-        fs.copySync(rootPath + 'assets/files/themes/index.js',  indexTheme);
-      } else {
-        logs.push(chalk.yellow(indexTheme) + ' directory hasn\'t been copied because it exists');
-      }
+      // Images
+      const images = require('./architecture/init/images');
+      tempLogs = await images.init(rootPath);
+      logs = logs.concat(tempLogs);
 
-      // Assets
-      const assetsLogo = 'src/assets/images/logo.png';
-      if (!fs.pathExistsSync(assetsLogo)) {
-        fs.copySync(rootPath + 'assets/files/assets/images/logo.png',  assetsLogo);
-        fs.copySync(rootPath + 'assets/files/assets/images/logo@2x.png',  'src/assets/images/logo@2x.png');
-        fs.copySync(rootPath + 'assets/files/assets/images/logo@3x.png',  'src/assets/images/logo@3x.png');
-      } else {
-        logs.push(chalk.yellow(assetsLogo) + ' hasn\'t been copied because it exists');
-      }
+      // Styles
+      const styles = require('./architecture/init/styles');
+      tempLogs = await styles.init(rootPath);
+      logs = logs.concat(tempLogs);
 
-      const assetsFormStyle = 'src/assets/styles/form.js';
-      if (!fs.pathExistsSync(assetsFormStyle)) {
-        fs.copySync(rootPath + 'assets/files/assets/styles/form.js',  assetsFormStyle);
-      } else {
-        logs.push(chalk.yellow(assetsFormStyle) + ' hasn\'t been copied because it exists');
-      }
+      // App
+      const app = require('./architecture/init/app');
+      tempLogs = await app.init(rootPath);
+      logs = logs.concat(tempLogs);
 
-      const assetsIndexStyle = 'src/assets/styles/index.js';
-      if (!fs.pathExistsSync(assetsIndexStyle)) {
-        fs.copySync(rootPath + 'assets/files/assets/styles/index.js',  assetsIndexStyle);
-      } else {
-        logs.push(chalk.yellow(assetsIndexStyle) + ' hasn\'t been copied because it exists');
-      }
+      // Forms
+      const forms = require('./architecture/init/forms');
+      tempLogs = await forms.init(rootPath);
+      logs = logs.concat(tempLogs);
+
+      // Navigator
+      const navigator = require('./architecture/init/navigator');
+      tempLogs = await navigator.init(rootPath);
+      logs = logs.concat(tempLogs);
+
+      // Redux
+      const redux = require('./architecture/init/redux');
+      tempLogs = await redux.init(rootPath);
+      logs = logs.concat(tempLogs);
+
+      // Screens
+      const screens = require('./architecture/init/screens');
+      tempLogs = await screens.init(rootPath);
+      logs = logs.concat(tempLogs);
+
+      // Main
+      const main = require('./architecture/init/main');
+      tempLogs = await main.init(rootPath);
+      logs = logs.concat(tempLogs);
     }
 
     return logs;

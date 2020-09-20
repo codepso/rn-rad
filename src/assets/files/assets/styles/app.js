@@ -1,25 +1,18 @@
 import {StyleSheet} from 'react-native';
-import {formStyle} from './form';
-import {uiColors} from '../../themes';
 
 const appStyle = StyleSheet.create({
   panSafeArea: {
     flex: 1,
-    backgroundColor: uiColors.bg.app,
   },
-  panKeyboard: {
+  panKeyboard2: {
     flexGrow: 1,
   },
+  panKeyboard: {
+    flex: 1,
+  },
   panMain: {
-    backgroundColor: uiColors.bg.app,
     flex: 1,
     justifyContent: 'center',
-  },
-  btnClose: {
-    backgroundColor: '#3b5470',
-  },
-  btnSuccess: {
-    backgroundColor: uiColors.bg.success,
   },
   panCenter: {
     alignItems: 'center',
@@ -31,7 +24,6 @@ const appStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   panLogo: {
-    marginTop: 20,
     alignItems: 'center',
   },
   imgLogo: {
@@ -42,31 +34,42 @@ const appStyle = StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
     marginBottom: 10,
-    color: uiColors.txt.app,
   },
   txtLogo: {
-    fontWeight: 'bold',
     fontSize: 20,
-    marginTop: 10,
-    marginBottom: 10,
-    color: uiColors.txt.logo,
+    marginTop: 5,
+    marginBottom: 5,
   },
   setRight: {
     alignItems: 'flex-end',
   },
   setCenter: {
     alignSelf: 'center',
-  },
-  panLogin: {
-    marginTop: 30,
-    marginBottom: 10,
-  },
-  txtOverlay: {
-    color: uiColors.txt.overlay,
+    textAlign: 'center',
   },
   btnMain: {
     borderRadius: 15,
   },
+  txtBold: {
+    fontWeight: 'bold',
+  },
+  mrg20TB: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  mrg20B: {
+    marginBottom: 20,
+  },
+  mrg10T: {
+    marginTop: 10,
+  },
+  mrg10TB: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  mrg30B: {
+    marginBottom: 30,
+  }
 });
 
-export {appStyle, formStyle};
+export {appStyle};
