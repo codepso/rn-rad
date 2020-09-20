@@ -50,18 +50,43 @@ install the most used [packages](#packages) and pod's (ios)
 rn-rad i packages
 rn-rad i packages --redux false
 rn-rad i packages -r false
-rn-rad i structure --lang false
-rn-rad i structure -l false
+
+rn-rad i packages --lang false
+rn-rad i packages -l false
 ```
+
+##### Icons
+ios/AwesomeProject/info.plist
+```bash
+<key>UIAppFonts</key>
+<array>
+  <string>MaterialCommunityIcons.ttf</string>
+  <string>MaterialIcons.ttf</string>
+</array>
+``` 
+
+android/app/build.gradle
+```bash
+project.ext.vectoricons = [
+    iconFontNames: ['MaterialIcons.ttf', 'MaterialCommunityIcons.ttf']
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+```  
+
 #### command: i structure [options]
 Create the directory structure
 
-- --redux (-r) Flag to indicate if a redux directory will be added, default: true
+- --redux (-r) Flag to indicate if redux directory will be added, default: true
+- --lang (-l) Flag to indicate if i18n directory will be added, default: true
 
 ```bash
 rn-rad i structure
 rn-rad i structure --redux false
 rn-rad i structure -r false
+
+rn-rad i structure --lang false
+rn-rad i structure -l false
 ```
 <h1>
   <img src="https://codepso-comunity.s3.us-east-2.amazonaws.com/rn-rad/rn-rad-s-3.jpg" alt="Codepso">
