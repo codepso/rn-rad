@@ -7,24 +7,24 @@ import {appStyle} from '../assets/styles/app';
 import {formStyle} from '../assets/styles/form';
 import {AlertUI, BlockUI, MainHelper} from '@codepso/rn-helper';
 
-const {{formName}} = (props) => {
+const {{formName}} = () => {
   const alertUI = createRef();
   const blockUI = createRef();
 
   const {{schemaName}} = Yup.object().shape({
-    name: Yup.string().required('Enter your name')
+    name: Yup.string().required('Enter your name'),
   });
 
   const initialValues = {name: ''};
   const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
-  const onSend = async () => {
+  const onSend = async (values) => {
     blockUI.current.open(true);
     try {
       console.log(values);
       await sleep(1000);
       blockUI.current.open(false);
-      alertUI.current.open('Success','Data has been sent',);
+      alertUI.current.open('Success', 'Data has been sent');
     } catch (error) {
       blockUI.current.open(false);
       let message = MainHelper.getError(error);
