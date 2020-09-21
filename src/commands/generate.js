@@ -185,6 +185,9 @@ const form = async (args) => {
     await helper.checkPackage(['@codepso/rn-helper']);
     let q =  questions.FORM;
 
+    const withPaper = await helper.checkFlag('paper');
+    console.log(withPaper);
+
     let path = helper.readOption(args, ['p', 'path'], 'string');
     if (!_.isNull(path)) {
       _.unset(q, 'path');
@@ -218,7 +221,8 @@ const form = async (args) => {
     name = helper.clearSchematicName(name, 'form');
     const formName = name + 'Form';
     const schemaName = name + 'Schema';
-    const templatePath = 'templates/forms/basic/form.hbs';
+    const tmpFormPath = withPaper ? 'templates/forms/paper/form.hbs' : 'templates/forms/basic/form.hbs';
+    const tmpViewPath = withPaper ? 'templates/forms/paper/view.hbs' : 'templates/forms/basic/view.hbs';
 
     const filePath = helper.getFilePath(path, formName);
     if (fs.pathExistsSync(filePath)) {
@@ -242,17 +246,21 @@ const form = async (args) => {
       return "{{top: ''}}"
     });*/
 
+    Handlebars.registerHelper('top:', function (text) {
+      return "{{top: 'never'}}"
+    });
+
     let r = [];
     const context = {
       formName,
       schemaName,
       title: name + ' Form',
     };
-    await generateFile(templatePath, filePath, context);
+    await generateFile(tmpFormPath, filePath, context);
     r.push(chalk.yellow(formName) + ' has been created');
 
     if (view) {
-      const options = prepareOptions(name, 'form');
+      const options = prepareOptions(name, tmpViewPath);
       let t = await component([], 'screen', options);
       r = helper.mergeResults(r, t);
     }
@@ -267,10 +275,10 @@ const form = async (args) => {
 /**
  * Prepare options.
  * @param {string} name - Schematic name.
- * @param {string} from - Prepare option from schematic.
+ * @param {string} path - Prepare option from schematic.
  * @returns {Object}
  */
-const prepareOptions = (name, from = '') => {
+const prepareOptions = (name, path = '') => {
   let qMain = questions.SCREEN;
   delete qMain.name.validate;
   const qUpdates = {
@@ -283,8 +291,7 @@ const prepareOptions = (name, from = '') => {
     }
   }
 
-  const template = 'templates/forms/basic/view.hbs';
-
+  const template = path === '' ? 'templates/forms/basic/view.hbs' : path;
   const context = {
     formName: name + 'Form'
   }

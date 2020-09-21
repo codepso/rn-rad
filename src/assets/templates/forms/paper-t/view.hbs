@@ -1,0 +1,24 @@
+import React from 'react';
+import {View} from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
+import {appStyle, formStyle} from '../assets/styles';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {{formName}} from '../forms/{{formName}}';
+
+const {{componentName}} = ({navigation}) => {
+  return (
+    <SafeAreaView style={appStyle.panSafeArea}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={appStyle.panKeyboard}
+        keyboardShouldPersistTaps="handled">
+        <View style={appStyle.panMain}>
+          <View style={[formStyle.container, appStyle.panLogin]}>
+            <{{formName}} navigation={navigation} />
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default {{componentName}};

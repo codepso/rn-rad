@@ -1,23 +1,25 @@
-import React, {createRef} from 'react';
-import {Button} from 'react-native-elements';
+import React from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {Text, TextInput, View} from 'react-native';
-import {formStyle, appStyle} from '../assets/styles';
+import {View} from 'react-native';
+import {Button, Text, TextInput, HelperText} from 'react-native-paper';
+import {appStyle} from '../assets/styles/app';
+import {formStyle} from '../assets/styles/form';
 import {AlertUI, BlockUI, MainHelper} from '@codepso/rn-helper';
 
-const {{schemaName}} = Yup.object().shape({
-  name: Yup.string().required('Please enter your name.'),
-});
+const {{formName}} = (props) => {
+  const alertUI = createRef();
+  const blockUI = createRef();
 
-const alertUI = createRef();
-const blockUI = createRef();
-const sleep = (m) => new Promise((r) => setTimeout(r, m));
+  const {{schemaName}} = Yup.object().shape({
+    name: Yup.string().required('Enter your name')
+  });
 
-const {{formName}} = () => {
-  const onSend = async (values) => {
+  const initialValues = {name: ''};
+  const sleep = (m) => new Promise((r) => setTimeout(r, m));
+
+  const onSend = async () => {
     blockUI.current.open(true);
-
     try {
       console.log(values);
       await sleep(500);
@@ -36,33 +38,32 @@ const {{formName}} = () => {
   return (
     <Formik
       enableReinitialize={true}
-      initialValues={{{name: ''}}}
+      initialValues={initialValues}
       validationSchema={{{schema}}}
       onSubmit={(values) => onSend(values)}>
       {(propsForm) => (
         <>
+          <AlertUI ref={alertUI} />
+          <BlockUI ref={blockUI} />
           <Text style={[appStyle.txtTitle, appStyle.setCenter]}>{{title}}</Text>
-          <View style={formStyle.form}>
-            <AlertUI ref={alertUI} />
-            <BlockUI ref={blockUI} />
+          <View style={formStyle.panForm}>
             <TextInput
-              onChangeText={propsForm.handleChange('name')}
-              onBlur={propsForm.handleBlur('name')}
-              style={formStyle.input}
+              mode={'outlined'}
               placeholder={'Name'}
-              placeholderTextColor={'white'}
               value={propsForm.values.name}
-              autoFocus={true}
+              autoCapitalize={'none'}
+              onChangeText={propsForm.handleChange('name')}
+              onBlur={propsForm.handleBlur('email')}
             />
-            <Text style={formStyle.error}>
+            <HelperText type="error">
               {propsForm.touched.name && propsForm.errors.name}
-            </Text>
+            </HelperText>
             <Button
-              buttonStyle={formStyle.button}
-              titleStyle={formStyle.txtButton}
-              onPress={propsForm.handleSubmit}
-              title="Send"
-            />
+              mode="contained"
+              contentStyle={formStyle.btnMain}
+              onPress={propsForm.handleSubmit}>
+              SEND
+            </Button>
           </View>
         </>
       )}

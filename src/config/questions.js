@@ -69,14 +69,14 @@ module.exports = Object.freeze({
     {
       type : 'confirm',
       name : 'redux',
-      message : 'Will you use Redux?'
+      message : 'Will you use redux?'
     }
   ],
   PROJECT: [
     {
       type : 'confirm',
       name : 'resources',
-      message : 'Initialize with resources (themes, styles, etc.)'
+      message : 'Initialize with resources (themes, styles, auth, etc.)'
     }
   ],
   LANG: [

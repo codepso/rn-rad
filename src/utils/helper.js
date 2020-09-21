@@ -287,6 +287,7 @@ module.exports = {
   readTemplate,
   writeTemplate,
   checkPackage,
+  checkFlag,
   validate,
   currentPath,
   getFilePath,
