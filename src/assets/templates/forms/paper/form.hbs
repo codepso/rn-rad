@@ -52,7 +52,7 @@ const {{formName}} = () => {
               value={propsForm.values.name}
               autoCapitalize={'none'}
               onChangeText={propsForm.handleChange('name')}
-              onBlur={propsForm.handleBlur('email')}
+              onBlur={propsForm.handleBlur('name')}
             />
             <HelperText type="error">
               {propsForm.touched.name && propsForm.errors.name}
