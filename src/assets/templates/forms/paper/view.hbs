@@ -9,7 +9,9 @@ const {{componentName}} = ({navigation}) => {
 
   return (
     <SafeAreaView style={appStyle.panSafeArea} forceInset={{{top: 'never'}}}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={appStyle.panKeyboard}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={appStyle.panKeyboard}>
         <View style={formStyle.panContainer}>
           <{{formName}} navigation={navigation} />
         </View>

@@ -186,7 +186,6 @@ const form = async (args) => {
     let q =  questions.FORM;
 
     const withPaper = await helper.checkFlag('paper');
-    console.log(withPaper);
 
     let path = helper.readOption(args, ['p', 'path'], 'string');
     if (!_.isNull(path)) {
@@ -248,6 +247,10 @@ const form = async (args) => {
 
     Handlebars.registerHelper('top:', function (text) {
       return "{{top: 'never'}}"
+    });
+
+    Handlebars.registerHelper('validation:', function (text) {
+      return '{' + schemaName + '}';
     });
 
     let r = [];

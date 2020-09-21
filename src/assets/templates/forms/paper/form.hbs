@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {View} from 'react-native';
@@ -22,15 +22,12 @@ const {{formName}} = (props) => {
     blockUI.current.open(true);
     try {
       console.log(values);
-      await sleep(500);
+      await sleep(1000);
       blockUI.current.open(false);
-      alertUI.current.open(
-        'Success',
-        'Data has been sent',
-      );
+      alertUI.current.open('Success','Data has been sent',);
     } catch (error) {
       blockUI.current.open(false);
-      let message = MainHelper.getErrorMessage(error);
+      let message = MainHelper.getError(error);
       alertUI.current.open('Snap!', message);
     }
   };
@@ -39,13 +36,15 @@ const {{formName}} = (props) => {
     <Formik
       enableReinitialize={true}
       initialValues={initialValues}
-      validationSchema={{{schema}}}
+      validationSchema={{{validation: true}}}
       onSubmit={(values) => onSend(values)}>
       {(propsForm) => (
         <>
           <AlertUI ref={alertUI} />
           <BlockUI ref={blockUI} />
-          <Text style={[appStyle.txtTitle, appStyle.setCenter]}>{{title}}</Text>
+          <Text style={[appStyle.txtTitle, appStyle.setCenter]}>
+            {{title}}
+          </Text>
           <View style={formStyle.panForm}>
             <TextInput
               mode={'outlined'}

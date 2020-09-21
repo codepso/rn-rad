@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {View} from 'react-native';
@@ -11,8 +11,12 @@ import {formStyle} from '../assets/styles/form';
 import {signInStyle} from '../assets/styles/sign-in';
 import {setAuthUser} from '../redux/actions/user';
 import {coreState} from '../redux/state';
+import {AlertUI, BlockUI, MainHelper} from '@codepso/rn-helper';
 
 const SignInForm = (props) => {
+  const alertUI = createRef();
+  const blockUI = createRef();
+
   const SignInSchema = Yup.object().shape({
     email: Yup.string()
       .email('Enter a valid email')
@@ -23,9 +27,13 @@ const SignInForm = (props) => {
   });
 
   const initialValues = {...formState.signIn};
+  const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
   const onSend = async () => {
+    blockUI.current.open(true);
     try {
+      await sleep(1000);
+      blockUI.current.open(false);
       const accessToken = 'ad345mubafvqwZ';
       let user = {
         name: 'Juan Minaya',
@@ -35,7 +43,9 @@ const SignInForm = (props) => {
       const payload = {...user, accessToken};
       props.dispatch(setAuthUser(payload));
     } catch (error) {
-      // Error
+      blockUI.current.open(false);
+      let message = MainHelper.getError(error);
+      alertUI.current.open('Snap!', message);
     }
   };
 
@@ -47,6 +57,8 @@ const SignInForm = (props) => {
       onSubmit={(values) => onSend(values)}>
       {(propsForm) => (
         <>
+          <AlertUI ref={alertUI} />
+          <BlockUI ref={blockUI} />
           <Text style={[appStyle.txtTitle, appStyle.setCenter]}>Sign In</Text>
           <View style={formStyle.panForm}>
             <TextInput

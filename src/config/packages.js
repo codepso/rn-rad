@@ -21,6 +21,7 @@ module.exports = Object.freeze({
     'formik',
     'moment',
     'react-native-keyboard-aware-scroll-view',
+    '@codepso/rn-helper',
   ],
   REDUX: [
     'redux',

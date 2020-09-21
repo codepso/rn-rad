@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, KeyboardAvoidingView} from 'react-native';
+import {View, KeyboardAvoidingView, Platform} from 'react-native';
 import {{formName}} from '../forms/{{formName}}';
 
 const {{componentName}} = ({navigation}) => {
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
       <View>
         <{{formName}} navigation={navigation} />
       </View>

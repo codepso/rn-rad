@@ -25,7 +25,7 @@ const {{formName}} = () => {
     <Formik
       enableReinitialize={true}
       initialValues={{{name: ''}}}
-      validationSchema={{{schema}}}
+      validationSchema={{{validation: true}}}
       onSubmit={(values) => onSend(values)}>
       {(propsForm) => (
         <>
@@ -38,13 +38,8 @@ const {{formName}} = () => {
               value={propsForm.values.name}
               autoFocus={true}
             />
-            <Text>
-              {propsForm.touched.name && propsForm.errors.name}
-            </Text>
-            <Button
-              onPress={propsForm.handleSubmit}
-              title="Send"
-            />
+            <Text>{propsForm.touched.name && propsForm.errors.name}</Text>
+            <Button onPress={propsForm.handleSubmit} title="Send" />
           </View>
         </>
       )}
