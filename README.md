@@ -171,5 +171,6 @@ rn-rad g form User -p src/forms/user -v false
 - Formik
 - React Native Localize
 - i18n js
+- React Native Helper
 ## License
 The React RAD is licensed under the terms of the GPL Open Source license and is available for free.
