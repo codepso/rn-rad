@@ -28,6 +28,7 @@
   "dependencies": {
     "@octokit/rest": "^16.1.0",
     "@pnpm/read-package-json": "^3.0.2",
+    "axios": "^0.21.1",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
