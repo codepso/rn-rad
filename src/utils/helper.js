@@ -119,7 +119,7 @@ const checkPackage = async (pkgs) => {
       keys.forEach(key => {
         const vA = pkgs.get(key);
         if (!isHigherVersion(vA, pkgJson['dependencies'][key])) {
-          throw {message: 'Package ' + chalk.yellow(key) + ' must be ' + chalk.yellow(vA) + ' or geather'};
+          // throw {message: 'Package ' + chalk.yellow(key) + ' must be ' + chalk.yellow(vA) + ' or geather'};
         }
       });
     }
