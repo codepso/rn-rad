@@ -141,7 +141,7 @@ const initConfig = async () => {
     const rootPath = await helper.getRootPath(env) + 'src/';
     const pathResource = 'rn-rad.json';
     if (fs.pathExistsSync(pathResource)) {
-      logs.push(chalk.yellow(pathResource) + ' already exists');
+      throw {message : chalk.yellow(pathResource) + ' already exists'};
     } else {
       fs.copySync(rootPath + 'assets/files/rn-rad.json',  'rn-rad.json');
     }

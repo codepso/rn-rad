@@ -109,7 +109,7 @@ const getVersion = async (env) => {
   }
 };
 
-const checkPackage = async (pkgs) => {
+const checkPackage = async (pkgs, flag = false) => {
   try {
     const hasVersions = (pkgs instanceof Map);
     const keys = hasVersions ? Array.from(pkgs.keys()) : pkgs;
@@ -123,7 +123,7 @@ const checkPackage = async (pkgs) => {
       }
     });
 
-    if (message !== '') {
+    if (message !== '' && !flag) {
       throw {message};
     }
 
@@ -135,12 +135,12 @@ const checkPackage = async (pkgs) => {
         }
       });
 
-      if (message !== '') {
+      if (message !== '' && !flag) {
         throw {message};
       }
     }
 
-    return true;
+    return message === '';
   } catch (e) {
     throw e;
   }
@@ -162,9 +162,9 @@ const isHigherVersion = (a, b) => {
 };
 
 const checkPkgAndFlag = async (pkgs, feature) => {
-  const hasPackage = await checkPackage(pkgs);
+  const hasPackage = await checkPackage(pkgs, true);
   const hasFeatureActive = await checkFlag(feature);
-  return hasPackage && hasFeatureActive;
+  return hasPackage || hasFeatureActive;
 };
 
 const checkFlag = async (feature) => {
