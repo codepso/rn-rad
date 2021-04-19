@@ -23,6 +23,16 @@ let dependencies = packages.MAIN;
 const main = (option) => {
   const args = minimist(process.argv.slice(2));
   switch (option) {
+    case 'config':
+      initConfig().then((logs) => {
+        log('The rn-rad.json has been ' + chalk.yellow('created'));
+        helper.render(logs);
+        helper.endLine();
+      }, (e) => {
+        log(helper.getError(e.message));
+        helper.endLine();
+      });
+      break;
     case 'packages':
       installPackages(args).then((args) => {}, (e) => {
         log(helper.getError(e.message));
@@ -120,6 +130,23 @@ const initStructure = async (args) => {
     // Added environment
     fs.copySync(assetsPath + 'files/environments/environment.ts', base + 'environments/environment.ts');
     fs.copySync(assetsPath + 'files/environments/index.js', base + 'environments/index.js');
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+const initConfig = async () => {
+  let logs = [];
+  try {
+    const rootPath = await helper.getRootPath(env) + 'src/';
+    const pathResource = 'rn-rad.json';
+    if (fs.pathExistsSync(pathResource)) {
+      logs.push(chalk.yellow(pathResource) + ' already exists');
+    } else {
+      fs.copySync(rootPath + 'assets/files/rn-rad.json',  'rn-rad.json');
+    }
+
+    return logs;
   } catch (e) {
     throw new Error(e.message);
   }

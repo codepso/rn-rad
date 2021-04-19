@@ -39,6 +39,7 @@ const help = () => {
   log('Available Commands:');
   log('');
   log(chalk.yellow('Initializers (i)'));
+  log(chalk.yellow(' - i config'));
   log(chalk.yellow(' - i packages [redux=true]'));
   log(chalk.yellow(' - i structure [redux=true]'));
   log(chalk.yellow(' - i project [redux=true]'));
