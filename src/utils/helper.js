@@ -124,7 +124,7 @@ const checkPackage = async (pkgs) => {
     });
 
     if (message !== '') {
-      throw message;
+      throw {message};
     }
 
     if (hasVersions) {
@@ -136,7 +136,7 @@ const checkPackage = async (pkgs) => {
       });
 
       if (message !== '') {
-        throw message;
+        throw {message};
       }
     }
 

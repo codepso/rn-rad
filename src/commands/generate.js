@@ -171,7 +171,7 @@ const component = async (args, type = 'component', options = {}) => {
     // Response
     return chalk.yellow(componentName) + ' has been created';
   } catch (e) {
-    throw new Error(e);
+    throw new Error(e.message);
   }
 };
 
