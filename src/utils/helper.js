@@ -9,7 +9,7 @@ const writeFile = promisify(fs.writeFile);
 const accessDir = promisify(fs.access);
 const accessResource = promisify(fs.access);
 
-const getError = (error, resource = '') => {
+const getError = (error, params = {}) => {
   let message = 'There was an unknown error';
   if (typeof error === 'string') {
     message = error;
@@ -20,14 +20,21 @@ const getError = (error, resource = '') => {
   if (_.has(error, 'code')) {
     switch (error.code) {
       case 'ENOENT':
-        message = 'There was an error reading/writing the ' + chalk.yellow(resource);
+        if (_.has(params, 'path')) {
+          message = 'There was an error reading/writing the ' + chalk.yellow(params.path);
+        }
         break;
       case 'REACT_NATIVE':
         message = 'It must be a ' + chalk.yellow('React Native') + ' project';
         break;
     }
   }
-  return chalk.red('E -> ') +  message;
+
+  if (_.has(params, 'onlyMessage')) {
+    return message;
+  } else {
+    return chalk.red('E -> ') +  message;
+  }
 };
 
 const readOption = (args, keys, type = 'bool') => {
@@ -88,16 +95,16 @@ const convertTo = (value, to) => {
 };
 
 const getVersion = async (env) => {
+  const rootPath = await getRootPath(env);
+  const path = rootPath + 'package.json';
   try {
-    const rootPath = await getRootPath(env);
-    const path = rootPath + 'package.json';
     const pkgJson = await readPackageJson.default(path);
     if (!_.has(pkgJson, 'version')) {
       throw {code: 'PACKAGE_READ'};
     }
     return pkgJson['version'];
   } catch (error) {
-    let message = getError(error, path);
+    let message = getError(error, {path});
     throw {message};
   }
 };
@@ -108,20 +115,29 @@ const checkPackage = async (pkgs) => {
     const keys = hasVersions ? Array.from(pkgs.keys()) : pkgs;
     const pkgJson = await readPackageJson.default('package.json');
     const r = _.pick(pkgJson['dependencies'], keys);
+    let message = '';
 
     keys.forEach(key => {
       if (!_.has(r, key)) {
-        throw {message: 'Package ' + chalk.yellow(key) + ' not found'};
+        message = 'Package ' + chalk.yellow(key) + ' not found';
       }
     });
+
+    if (message !== '') {
+      throw message;
+    }
 
     if (hasVersions) {
       keys.forEach(key => {
         const vA = pkgs.get(key);
         if (!isHigherVersion(vA, pkgJson['dependencies'][key])) {
-          // throw {message: 'Package ' + chalk.yellow(key) + ' must be ' + chalk.yellow(vA) + ' or geather'};
+          message = 'Package ' + chalk.yellow(key) + ' must be ' + chalk.yellow(vA) + ' or geather';
         }
       });
+
+      if (message !== '') {
+        throw message;
+      }
     }
 
     return true;
@@ -135,9 +151,13 @@ const isHigherVersion = (a, b) => {
   for (let i = 0; i < lA.length; i ++) {
     const vA = parseInt(lA[i]), vB = parseInt(lB[i]);
     if (vA > vB) {
-      return false
+      return false;
+    }
+    if (vB > vA) {
+      return true;
     }
   }
+
   return true;
 };
 
@@ -182,7 +202,7 @@ const readTemplate = async (path) => {
     const data = await readFile(path);
     return data.toString();
   } catch (error) {
-    let message = getError(error, path);
+    let message = getError(error, {path});
     throw {message};
   }
 };
@@ -191,7 +211,7 @@ const writeTemplate = async (path, content) => {
   try {
     await writeFile(path, content);
   } catch (error) {
-    let message = getError(error, path);
+    let message = getError(error, {path});
     throw {message};
   }
 };
